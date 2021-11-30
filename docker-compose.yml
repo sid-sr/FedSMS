@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:  
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: api
+    image: federated-flask-api
+    volumes:
+      - ./backend:/usr/src/app/backend
+    ports:
+      - "5000:5000"
+
+  client:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: client
+    image: federated-react-app
+    volumes:
+      - ./frontend:/usr/src/app/frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+# client and api are part of the same network by default
+# due to docker-compose.
