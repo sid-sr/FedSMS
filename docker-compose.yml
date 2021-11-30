@@ -1,8 +1,8 @@
-version: '3.7'
+version: "3.7"
 
-services:  
+services:
   api:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: api
@@ -22,8 +22,9 @@ services:
       - ./frontend:/usr/src/app/frontend
     ports:
       - "3000:3000"
+    environment:
+      HOST_ADDR: api
     depends_on:
       - api
-
 # client and api are part of the same network by default
 # due to docker-compose.

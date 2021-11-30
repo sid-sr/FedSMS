@@ -12,4 +12,6 @@ RUN pip --no-cache-dir install -r requirements.txt
 ENV SERVER_ADDR="0.0.0.0"
 ENV PORT="5000"
 
+EXPOSE 5000
+
 CMD ["python3", "./src/app.py"]
