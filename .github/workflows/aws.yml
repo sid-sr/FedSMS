@@ -63,7 +63,7 @@ jobs:
       id: deploy-task-def
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        task-definition: ${{ steps.download-task-def.outputs.task-definition }}
         service: FedSMSService
         cluster: FedSMS
         wait-for-service-stability: true
