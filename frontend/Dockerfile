@@ -1,15 +1,18 @@
-FROM node:16.13.0-alpine
-
+# Setup for base environment
+FROM node:16.13.0-alpine AS base
 WORKDIR /usr/src/app/frontend
-
 COPY package*.json ./
-
 RUN npm install
 
-COPY . ./
-
+EXPOSE 3000
 ENV HOST_ADDR="api"
 
-EXPOSE 3000
+# Setup for production (on top of base)
+FROM base AS build
+COPY public ./public
+COPY src ./src
+RUN npm run build
 
-CMD ["npm", "start"]
+# serve the build
+RUN npm install -g serve
+CMD ["serve -s", "build"]

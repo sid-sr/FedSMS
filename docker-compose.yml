@@ -5,6 +5,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: base
+    # for dev environment
+    command: python3 ./src/app.py
     container_name: api
     image: federated-flask-api
     volumes:
@@ -16,6 +19,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: base
+    # for dev environment
+    command: npm start
     container_name: client
     image: federated-react-app
     volumes:

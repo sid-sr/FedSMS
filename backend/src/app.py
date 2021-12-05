@@ -9,7 +9,10 @@ api = Api(app)
 
 api.add_resource(Hello, '/api/hello')
 
-# main driver function
+# Dev
 if __name__ == '__main__':
     host, port = get_addr()
     app.run(host=host, port=port, debug=True)
+# Prod
+else:
+    gunicorn_app = app
