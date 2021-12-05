@@ -54,21 +54,15 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         
-    - name: Download task definition
-      id: download-task-def
-      run: |
-        aws ecs describe-task-definition --task-definition FedSMSTask --query taskDefinition > task-definition.json
 
-    - name: Deploy Amazon ECS task definition
-      id: deploy-task-def
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.download-task-def.outputs.task-definition }}
-        service: FedSMSService
-        cluster: FedSMS
-        wait-for-service-stability: true
 
-        
+
+
+
+
+
+
+
     
 
    
