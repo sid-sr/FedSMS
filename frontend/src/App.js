@@ -1,7 +1,7 @@
-import logo from './logo.svg';
-import './App.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import './App.css';
+import logo from './logo.svg';
 
 function App() {
   const [apiValue, setApiValue] = useState(null);
@@ -20,7 +20,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Welcome to Fed SMS
         </p>
         <p>The API returned a value of &quot;{apiValue}&quot;.</p>
         <a
