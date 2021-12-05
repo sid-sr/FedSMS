@@ -1,3 +1,4 @@
+
 # This workflow will build and push a new container image to Amazon ECR
 
 on:
@@ -25,13 +26,13 @@ jobs:
         aws-region: us-east-2
 
     - name: Login to Amazon ECR
-      id: login-ecr
+      id: login_ecr
       uses: aws-actions/amazon-ecr-login@v1
       
     - name: Build, tag, and push image to Amazon ECR for backend
-      id: build-image-backend
+      id: build_image_backend
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
         ECR_REPOSITORY: backend
         IMAGE_TAG: latest
       run: |
@@ -42,9 +43,9 @@ jobs:
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         
     - name: Build, tag, and push image to Amazon ECR for frontend
-      id: build-image-frontend
+      id: build_image_frontend
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REGISTRY: ${{ steps.login_ecr.outputs.registry }}
         ECR_REPOSITORY: frontend
         IMAGE_TAG: latest
       run: |
@@ -54,15 +55,15 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         
-
-
-
-
-
-
-
-
-
-    
-
-   
+    - name: Download task definition
+      id: download_task_def
+      run: |
+        aws ecs describe-task-definition --task-definition FedSMSTask --query taskDefinition > task-definition.json
+    - name: Deploy Amazon ECS task definition
+      id: deploy_task_def
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        service: FedSMSService
+        cluster: FedSMS
+        wait-for-service-stability: true
