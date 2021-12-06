@@ -16,8 +16,7 @@ RUN npm run build
 FROM nginx:1.19
 
 ENV HOST_ADDR="api"
-COPY ./build /usr/share/nginx/html
+COPY --from=build /usr/src/app/frontend/build /usr/share/nginx/html
 COPY nginx.conf.template ./
-RUN envsubst '${HOST_ADDR}' < ./nginx.conf.template > /etc/nginx/conf.d/default.conf
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/bin/bash", "-c", "envsubst '${HOST_ADDR}' < ./nginx.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
