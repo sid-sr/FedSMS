@@ -5,7 +5,6 @@ COPY package*.json ./
 RUN npm install
 
 EXPOSE 3000
-ENV HOST_ADDR="api"
 
 # Setup for production (on top of base)
 FROM base AS build
@@ -14,5 +13,11 @@ COPY src ./src
 RUN npm run build
 
 # serve the build
-RUN npm install serve
-CMD npx serve build
+FROM nginx:1.19
+
+ENV HOST_ADDR="api"
+COPY ./build /usr/share/nginx/html
+COPY nginx.conf.template ./
+RUN envsubst '${HOST_ADDR}' < ./nginx.conf.template > /etc/nginx/conf.d/default.conf
+
+CMD ["nginx", "-g", "daemon off;"]

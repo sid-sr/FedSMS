@@ -1,12 +1,13 @@
 version: "3.7"
 
+# docker-compose is for dev environment
+
 services:
   api:
     build:
       context: ./backend
       dockerfile: Dockerfile
       target: base
-    # for dev environment
     command: python3 ./src/app.py
     container_name: api
     image: federated-flask-api
@@ -14,13 +15,15 @@ services:
       - ./backend:/usr/src/app/backend
     ports:
       - "5000:5000"
+    environment:
+      SERVER_ADDR: 0.0.0.0
+      PORT: 5000
 
   client:
     build:
       context: ./frontend
       dockerfile: Dockerfile
       target: base
-    # for dev environment
     command: npm start
     container_name: client
     image: federated-react-app
