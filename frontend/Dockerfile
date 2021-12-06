@@ -15,4 +15,4 @@ RUN npm run build
 
 # serve the build
 RUN npm install serve
-CMD npx serve -s build
+CMD npx serve build
