@@ -14,5 +14,5 @@ COPY src ./src
 RUN npm run build
 
 # serve the build
-RUN npm install -g serve
-CMD ["serve -s", "build"]
+RUN npm install serve
+CMD npx serve -s build
