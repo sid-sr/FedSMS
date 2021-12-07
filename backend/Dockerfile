@@ -17,6 +17,7 @@ FROM base as build
 
 ENV SERVER_ADDR="0.0.0.0"
 ENV PORT="5000"
+ENV ENVIRONMENT="production"
 
 WORKDIR /usr/src/app/backend/src
 RUN pip install gunicorn

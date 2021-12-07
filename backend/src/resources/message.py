@@ -1,3 +1,4 @@
+import os
 from flask import request, abort
 from flask_restful import Resource
 from marshmallow import Schema, fields
@@ -8,9 +9,13 @@ class MessageSchema(Schema):
     count = fields.Str(required=False)
 
 
+if os.environ['ENVIRONMENT'] == 'production':
+    mock_data_file = './data/mock/messages.json'
+else:
+    mock_data_file = './src/data/mock/messages.json'
+
 schema = MessageSchema()
-mock_data_file = open('./src/data/mock/messages.json')
-mock_data = json.load(mock_data_file)
+mock_data = json.load(open(mock_data_file))
 
 
 class Message(Resource):
