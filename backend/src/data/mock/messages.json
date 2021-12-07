@@ -1,0 +1,57 @@
+[
+  {
+    "message": "Can you make it on Friday?",
+    "embedding": [0, 0, 0, 0, 0, 0, 130, 24, 34],
+    "spam": false
+  },
+  {
+    "message": "WINNER!! As a valued network customer you have been selected to receivea �900 prize reward!",
+    "embedding": [0, 0, 0, 0, 0, 12, 138, 48, 84],
+    "spam": true
+  },
+  {
+    "message": "I've been searching for the right words to thank you for this breather. I promise I wont take your time!",
+    "embedding": [0, 0, 0, 0, 0, 132, 128, 41, 94],
+    "spam": false
+  },
+  {
+    "message": "I'm gonna be home soon and i don't want to talk about this stuff anymore tonight, k?",
+    "embedding": [0, 0, 0, 0, 0, 112, 128, 41, 94],
+    "spam": true
+  },
+  {
+    "message": "England v Macedonia - dont miss the goals/team news. Txt ur national team to 87077",
+    "embedding": [0, 0, 0, 0, 0, 112, 128, 41, 94],
+    "spam": true
+  },
+  {
+    "message": "Thanks for your subscription to Ringtone UK your mobile will be charged �5/month",
+    "embedding": [0, 0, 0, 0, 0, 112, 128, 41, 94],
+    "spam": true
+  },
+  {
+    "message": "No calls..messages..missed calls",
+    "embedding": [0, 0, 0, 0, 0, 112, 128, 41, 94],
+    "spam": false
+  },
+  {
+    "message": "Fair enough, anything going on?",
+    "embedding": [0, 0, 0, 0, 0, 112, 128, 41, 94],
+    "spam": false
+  },
+  {
+    "message": "Yeah hopefully, if tyler can't do it I could maybe ask around a bit",
+    "embedding": [0, 0, 0, 0, 0, 112, 128, 41, 94],
+    "spam": false
+  },
+  {
+    "message": "Sorry, I'll call later in meeting.",
+    "embedding": [0, 0, 0, 0, 0, 112, 128, 41, 94],
+    "spam": false
+  },
+  {
+    "message": "Tell where you reached",
+    "embedding": [0, 0, 0, 0, 0, 112, 128, 41, 94],
+    "spam": false
+  }
+]
