@@ -34,6 +34,7 @@ services:
       - "3000:3000"
     environment:
       HOST_ADDR: api
+      S3_URL: https://fedmodelbucket.s3.us-east-2.amazonaws.com
     depends_on:
       - api
 # client and api are part of the same network by default

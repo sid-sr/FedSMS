@@ -6,7 +6,12 @@ server {
     index index.html index.htm;
     try_files $uri $uri/ /index.html =404;
   }
-  
+
+  location ~ ^/api/download/(.*)$ {
+    resolver 127.0.0.11;
+    proxy_pass ${S3_URL}/$1;
+  }
+
   location /api {
       # nginx only used in prod, so 
       proxy_pass http://${HOST_ADDR}:5000;
