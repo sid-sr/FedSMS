@@ -23,6 +23,7 @@ function App() {
           Welcome to Fed SMS
         </p>
         <p>The API returned a value of &quot;{apiValue}&quot;.</p>
+        <a href="/settings">Go to settings</a>
       </header>
     </div>
   );
