@@ -23,14 +23,6 @@ function App() {
           Welcome to Fed SMS
         </p>
         <p>The API returned a value of &quot;{apiValue}&quot;.</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );

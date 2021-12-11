@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&family=Ubuntu:wght@500&display=swap');
+.container {
+  padding: 10px;
+  color: white;
+}
+.settingsHeading {
+  color: white;
+  font-family: 'Ubuntu', sans-serif;
+}
+.settingsCard {
+  background-color: #0c0b0b;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  margin-top: -10px;
+  text-align: center;
+}
+.cardHeading {
+  font-family: 'Open Sans', sans-serif;
+  color: #7a7979;
+}
+.divider {
+  border: 0;
+  height: 2px;
+  background: rgb(32, 32, 32);
+}
+.divider2 {
+  border: 0;
+  height: 1px;
+  background: #333;
+  width: 100%;
+}
+.alignleft {
+  float: left;
+}
+.alignright {
+  float: right;
+}
+.numberSlider {
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cardAction {
+  background-color: #007aff;
+  color: white;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  border-radius: 15px;
+  border: none;
+  width: 9em;
+  height: 2.5em;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+}
+.backText {
+  margin-top: -5px;
+  text-decoration: none;
+  color: #007aff;
+  font-size: 17px;
+}
