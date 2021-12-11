@@ -1,14 +1,10 @@
 # Setup for base environment
-FROM alpine:latest AS base
-
-RUN apk update
-RUN apk add py-pip
-RUN apk add --no-cache python3-dev 
-RUN pip install --upgrade pip
+FROM python:3.7.12-bullseye AS base
 
 WORKDIR /usr/src/app/backend
-COPY . /usr/src/app/backend
-RUN pip --no-cache-dir install -r requirements.txt
+COPY ./src /usr/src/app/backend/src
+COPY ./requirements.txt /usr/src/app/backend/requirements.txt
+RUN python3 -m pip --no-cache-dir install -r requirements.txt
 
 EXPOSE 5000
 
@@ -20,5 +16,5 @@ ENV PORT="5000"
 ENV ENVIRONMENT="production"
 
 WORKDIR /usr/src/app/backend/src
-RUN pip install gunicorn
+RUN python3 -m pip install gunicorn
 CMD gunicorn --bind $SERVER_ADDR:$PORT -w 4 app:gunicorn_app
