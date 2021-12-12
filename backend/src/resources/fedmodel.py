@@ -64,4 +64,5 @@ class FedModel(Resource):
             model = self.model_receiver.model
             model.summary()
             model.save(f'./src/data/saved_models/model.h5')
+            del model
         return Response(status=200)
