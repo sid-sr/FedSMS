@@ -15,6 +15,8 @@ services:
       - ./backend:/usr/src/app/backend
     ports:
       - "5000:5000"
+    env_file:
+      - .env
     environment:
       SERVER_ADDR: 0.0.0.0
       ENVIRONMENT: development
@@ -34,6 +36,7 @@ services:
       - "3000:3000"
     environment:
       HOST_ADDR: api
+      S3_URL: https://fedmodelbucket.s3.us-east-2.amazonaws.com
     depends_on:
       - api
 # client and api are part of the same network by default

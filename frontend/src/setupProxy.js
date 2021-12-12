@@ -5,6 +5,17 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const HOST = process.env.HOST_ADDR || 'localhost';
 
 module.exports = function (app) {
+  if (process.env.S3_URL) {
+    app.use(
+      '/api/download',
+      createProxyMiddleware({
+        target: process.env.S3_URL,
+        changeOrigin: true,
+        // remove the api/download part
+        pathRewrite: { '^/api/download': '' },
+      })
+    );
+  }
   app.use(
     '/api',
     createProxyMiddleware({
