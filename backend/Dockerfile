@@ -2,9 +2,9 @@
 FROM python:3.7.12-slim-bullseye AS base
 
 WORKDIR /usr/src/app/backend
-COPY ./src /usr/src/app/backend/src
 COPY ./requirements.txt /usr/src/app/backend/requirements.txt
 RUN python3 -m pip --no-cache-dir install -r requirements.txt
+COPY ./src /usr/src/app/backend/src
 
 EXPOSE 5000
 
