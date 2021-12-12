@@ -17,4 +17,4 @@ ENV ENVIRONMENT="production"
 
 WORKDIR /usr/src/app/backend/src
 RUN python3 -m pip install gunicorn
-CMD gunicorn --bind $SERVER_ADDR:$PORT -w 4 app:gunicorn_app
+CMD gunicorn --bind $SERVER_ADDR:$PORT -w 1 app:gunicorn_app
