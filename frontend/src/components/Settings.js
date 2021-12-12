@@ -15,6 +15,7 @@ function Settings() {
   const [uploadText, setUploadText] = useState('Upload');
   const [messageCount, setMessageCount] = useState(10);
   const [fetchModelText, setFetchModelText] = useState('Fetch Model');
+  const [model, setModel] = useState(null);
 
   const onSlide = (value) => {
     setMessageCount(value);
@@ -28,6 +29,7 @@ function Settings() {
     setFetchModelText('Fetching');
     const model = await tf.loadLayersModel('/api/download/model.json');
     model.summary();
+    setModel(model);
     setFetchModelText('Fetched');
   }
 
@@ -41,10 +43,12 @@ function Settings() {
   }
 
   async function uploading() {
-    if (uploadText == 'Upload') {
+    if (uploadText == 'Upload' && model) {
       setUploadText('Uploading');
-      await timeout(3000).then(() => setUploadText('Uploaded'));
+      //await timeout(3000).then(() => setUploadText('Uploaded'));
       //call to upload model
+      await model.save('http://localhost:3000/api/model');
+      setUploadText('Uploaded');
     }
   }
 
