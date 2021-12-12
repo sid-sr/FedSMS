@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import App from './App';
-import Settings from './components/settings';
+import Settings from './components/Settings';
 import './index.css';
 
 const Routing = () => {
@@ -15,9 +15,8 @@ const Routing = () => {
       </Routes>
       {/* <Footer /> */}
     </Router>
-  )
-}
-
+  );
+};
 
 ReactDOM.render(
   <React.StrictMode>
