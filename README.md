@@ -7,8 +7,8 @@ A privacy-oriented SMS client built with React and Flask. Containerized with Doc
 ## Notes:
 
 1. Before running the backend (with `python backend/src/app.py`) ensure a virtual environment is created
-   - Go to the backend folder and type `python -m venv venv`.
+   - Go to the backend folder and run: `python -m venv venv`.
    - For Linux: `source ./venv/bin/activate`
    - For Windows: `venv\scripts\activate.bat`
    - Run `pip install -r requirements.txt` to install the packages.
-2. Environment variables have default values (in `backend/src/app.py`).
+2. Environment variables have default values (in `backend/src/app.py`). Sensitive values are set in `.env`.
