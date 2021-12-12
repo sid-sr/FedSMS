@@ -47,7 +47,7 @@ function Settings() {
       setUploadText('Uploading');
       //await timeout(3000).then(() => setUploadText('Uploaded'));
       //call to upload model
-      await model.save('http://localhost:3000/api/model');
+      await model.save(window.location.origin + '/api/model');
       setUploadText('Uploaded');
     }
   }
