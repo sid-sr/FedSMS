@@ -7,9 +7,8 @@ server {
     try_files $uri $uri/ /index.html =404;
   }
 
-  location ~ ^/api/download/(.*)$ {
-    resolver 127.0.0.11;
-    proxy_pass ${S3_URL}/$1;
+  location /api/download/ {
+    rewrite /api/download/(.*)$ ${S3_URL}/$1 redirect;
   }
 
   location /api {
