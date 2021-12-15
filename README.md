@@ -2,7 +2,7 @@
 
 A privacy-oriented SMS client built with React and Flask. Containerized with Docker and hosted on AWS.
 
-[OpenAPI Spec](https://app.swaggerhub.com/apis-docs/sid-sr/FedSMS/1.0.0)
+[OpenAPI Spec](https://app.swaggerhub.com/apis-docs/fedsms22/FedSMS/1.0.0)
 
 ## Notes:
 
