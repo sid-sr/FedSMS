@@ -47,7 +47,19 @@ function Settings() {
       setUploadText('Uploading');
       //await timeout(3000).then(() => setUploadText('Uploaded'));
       //call to upload model
-      await model.save(window.location.origin + '/api/model');
+      //await model.save(window.location.origin + '/api/model', head);
+      await model.save(
+        tf.io.http(window.location.origin + '/api/model', {
+          requestInit: {
+            method: 'POST',
+            headers: {
+              numMessages: 130,
+              trainLoss: 1.03,
+              trainAcc: 94.32,
+            },
+          },
+        })
+      );
       setUploadText('Uploaded');
     }
   }
