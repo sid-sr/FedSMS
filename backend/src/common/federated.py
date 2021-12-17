@@ -23,6 +23,7 @@ def incrementModelIndex():
         },
         ReturnValues="UPDATED_NEW"
       )  
+      #insert call to aggregate
     else:
       #round not completed so increment only modelIndex
       response=ConfigTable.update_item(
