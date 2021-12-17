@@ -28,7 +28,7 @@ class Config(Resource):
               'clients': {'Value'  : json_request['clients']},
               'qfedAvg_q': {'Value'  : json_request['qfedAvg_q']},
               'qfedAvg_l': {'Value'  : json_request['qfedAvg_l']},
-              'lastUpdatedAt': {'Value':str(datetime.now(tz=pytz.timezone().strftime("%d/%m/%Y %H:%M:%S"))}
+              'lastUpdatedAt': {'Value':str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))}
           },
           ReturnValues="UPDATED_NEW"
         )
