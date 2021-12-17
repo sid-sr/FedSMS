@@ -55,7 +55,7 @@ function Settings() {
   return (
     <div className="container">
       <a href="/" className="backText">
-        <FaArrowLeft style={{ marginBottom: '-2px' }}></FaArrowLeft>
+        <FaArrowLeft style={{ marginBottom: '2px' }}></FaArrowLeft>
         <span>Back</span>
       </a>
       <h1 className="settingsHeading">Settings</h1>

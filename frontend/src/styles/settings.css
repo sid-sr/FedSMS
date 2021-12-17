@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&family=Ubuntu:wght@500&display=swap');
 .container {
-  padding: 10px;
+  padding: 18px;
   color: white;
   background-color: black;
   min-height: 100vh;
@@ -8,6 +8,9 @@
 .settingsHeading {
   color: white;
   font-family: 'Ubuntu', sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 15px;
 }
 .settingsCard {
   background-color: #0c0b0b;
@@ -15,23 +18,22 @@
   margin-left: auto;
   margin-right: auto;
   padding: 20px;
-  margin-top: -10px;
   text-align: center;
 }
 .cardHeading {
   font-family: 'Open Sans', sans-serif;
   color: #7a7979;
+  font-size: 19px;
+  font-weight: bold;
+  margin-top: 15px;
 }
 .divider {
-  border: 0;
-  height: 2px;
-  background: rgb(32, 32, 32);
+  background: gray;
+  margin-top: 25px;
 }
 .divider2 {
-  border: 0;
-  height: 1px;
-  background: #333;
-  width: 100%;
+  background: gray;
+  margin-top: 5px;
 }
 .alignleft {
   float: left;
