@@ -2,8 +2,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import datetime
 from flask_restful import Resource
-
 import io
 
 from flask import Response, request
@@ -56,13 +56,45 @@ class FedModel(Resource):
 
     def __init__(self):
         self.model_receiver = ModelReceiver()
+        self.metadata_headers = ['numMessages', 'trainLoss', 'trainAcc']
+
+    def check_headers(self, headers):
+        return all([h in headers for h in self.metadata_headers])
 
     def post(self):
         werkzeug.formparser.parse_form_data(
             request.environ, stream_factory=self.model_receiver.stream_factory)
+
+        if not self.check_headers(request.headers):
+            return Response(status=400)
+
+        # to add to DB
+        client = {
+            # should be s3 URL
+            "modelFile": "./src/data/saved_models/model.h5",
+
+            # Get these from DB:
+            "modelIndex": 4,
+            "round": 0,
+
+            # data from request
+            "numMessages": int(request.headers["numMessages"]),
+            "trainLoss": float(request.headers["trainLoss"]),
+            "trainAcc": float(request.headers["trainAcc"]),
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+
+        print(client, flush=True)
+
         with tf.Graph().as_default(), tf.Session():
             model = self.model_receiver.model
             model.summary()
-            model.save(f'./src/data/saved_models/model.h5')
+
+            # store this in s3
+            model.save(client["modelFile"])
+
             del model
+
+        # call method to add client row to DB
+
         return Response(status=200)
