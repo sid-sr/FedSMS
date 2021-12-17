@@ -1,11 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Readex+Pro&display=swap');
 .main-container {
   background-color: #fefcff;
   min-height: 100vh;
+  font-family: 'Lato', sans-serif;
 }
 
 .main-title {
   margin: 40px 20px 40px 3%;
-  text-align: center;
+  font-family: 'Readex Pro', sans-serif;
 }
 
 .main-title h1 {
@@ -17,6 +19,7 @@
   display: flex;
   margin: 0% 3% 30px 3%;
   width: 800px;
+  font-size: 17px;
 }
 
 .card-container {

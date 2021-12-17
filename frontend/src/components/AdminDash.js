@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify';
 import '../styles/admin.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AdminDash = () => {
   const [config, setConfig] = useState({
@@ -14,30 +16,66 @@ const AdminDash = () => {
     modelIndex: 0,
     strategy: 'qfedavg',
     fraction: 0.4,
-    roundsCompleted: 2,
-    clients: 2,
-    globalLoss: [1.3, 1.45],
-    globalAcc: [93.4, 94],
-    averageClientLoss: [1.3, 1.45],
-    averageClientAcc: [93.4, 94],
+    roundsCompleted: 0,
+    clients: 5,
+    globalLoss: [],
+    globalAcc: [],
+    averageClientLoss: [],
+    averageClientAcc: [],
     qfedAvg_q: 0.1,
     qfedAvg_l: 1,
     lastUpdatedAt: '16/12/2021 11:59AM',
   });
 
+  const getConfig = () => {
+    axios
+      .get('/api/config')
+      .then((res) => {
+        toast.success('Fetched latest configuration');
+        setConfig(res.data);
+        console.log(config);
+      })
+      .catch((err) => {
+        toast.error('Error retrieving configuration!');
+        console.error(err.toString());
+      });
+  };
+
   useEffect(() => {
-    axios.get(
-      'https://virtserver.swaggerhub.com/fedsms22/FedSMS/1.0.0/api/config',
-      (err, res) => {
-        if (err) console.error(err.toString());
-        else setConfig(res.data);
-      }
-    );
+    getConfig();
   }, []);
 
   const updateConfig = () => {
     console.log('New config: ', config);
-    // make axios put request here
+
+    const responsePromise = axios.put('/api/config', {
+      strategy: config.strategy,
+      fraction: config.fraction,
+      clients: config.clients,
+      qfedAvg_q: config.qfedAvg_q,
+      qfedAvg_l: config.qfedAvg_l,
+    });
+    toast.promise(responsePromise, {
+      pending: {
+        render() {
+          return 'Request sent..';
+        },
+        icon: '⌛',
+      },
+      success: {
+        render({ res }) {
+          getConfig();
+          return 'Updated configuration!';
+        },
+        icon: '🟢',
+      },
+      error: {
+        render({ data }) {
+          return 'Error updating configuration! Round may be in progress!';
+        },
+        icon: '⭕',
+      },
+    });
   };
 
   const updateValue = (event, field) => {
@@ -47,6 +85,7 @@ const AdminDash = () => {
 
   return (
     <div className="main-container">
+      <ToastContainer />
       <div className="main-title">
         <h1>FedSMS Admin Panel</h1>
       </div>
@@ -93,7 +132,7 @@ const AdminDash = () => {
                   />
                   <Form.Check
                     inline
-                    label="Q-FedAvg"
+                    label="q-FedAvg"
                     name="qfedavg"
                     type="radio"
                     checked={config.strategy === 'qfedavg'}
