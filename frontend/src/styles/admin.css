@@ -75,4 +75,6 @@
   margin-top: 20px;
   margin-bottom: 8px;
   height: 210px;
+  overflow: scroll;
+  overflow-x: hidden;
 }

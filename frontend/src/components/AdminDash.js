@@ -33,7 +33,7 @@ const AdminDash = () => {
   const [modelList, setModelList] = useState([]);
 
   const [sortAsc, setSortAsc] = useState(1);
-  const [searchID, setSearchID] = useState(null);
+  const [searchRound, setSearchRound] = useState(null);
 
   const getModelList = () => {
     axios
@@ -110,7 +110,7 @@ const AdminDash = () => {
   };
 
   const updateID = (e) => {
-    setSearchID(e.target.value == '' ? null : e.target.value);
+    setSearchRound(e.target.value == '' ? null : e.target.value);
   };
 
   const updateValue = (event, field) => {
@@ -220,13 +220,13 @@ const AdminDash = () => {
               <div className="card-info">
                 Search for the models and metadata sent by different clients.
                 Training set size is the message count. Currently shows last 5
-                models received. Hover over client ID for time info.
+                models received. Hover over client number for time info.
               </div>
               <div className="search-box mt-3">
                 <Form.Control
                   style={{ width: '85%' }}
                   type="text"
-                  placeholder="Enter Client ID"
+                  placeholder="Enter Round"
                   onChange={(e) => updateID(e)}
                 />
                 <Button
@@ -254,12 +254,13 @@ const AdminDash = () => {
                       <th style={{ width: '25%' }}>Training Set Size</th>
                       <th>Train Loss</th>
                       <th style={{ width: '20%' }}>Train Accuracy</th>
+                      <th style={{ width: '10%' }}>S3</th>
                     </tr>
                   </thead>
                   <tbody style={{ overflow: 'auto' }}>
                     {modelList
                       .filter(
-                        (e) => searchID === null || e.clientID == searchID
+                        (e) => searchRound === null || e.round == searchRound
                       )
                       .slice(0, 5)
                       .map((model, ind) => {
@@ -281,6 +282,16 @@ const AdminDash = () => {
                             <td>{model.numMessages}</td>
                             <td>{model.trainLoss}</td>
                             <td>{model.trainAcc} %</td>
+                            <td>
+                              <a
+                                target="_blank"
+                                rel="noreferrer"
+                                href={model.modelFile}
+                                style={{ textDecoration: 'none' }}
+                              >
+                                🔗
+                              </a>
+                            </td>
                           </tr>
                         );
                       })}
