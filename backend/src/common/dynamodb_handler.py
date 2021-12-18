@@ -1,11 +1,10 @@
 import boto3
 import os
-from os.path import join, dirname
 from dotenv import load_dotenv
 import json
 import decimal
 
-dotenv_path = join(dirname(__file__), '.env')
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 AWS_ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY', '')

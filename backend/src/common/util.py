@@ -55,19 +55,20 @@ def upload_model_tfjs(tf_model, bucket):
 
 
 def upload_model_h5(model, bucket, roundInfo):
-    ''' Save a Tensorflow model as a tensorflow.js model and upload it to S3
+    ''' Save a Tensorflow model as a .h5 model file and upload it to S3
     '''
-    file_name = 'model_'+str(roundInfo['modelIndex'])+".h5"
-    s3_folder_name = 'round_'+str(roundInfo['roundsCompleted'])
+    file_name = 'model_' + str(roundInfo['modelIndex']) + ".h5"
+    s3_folder_name = 'round_' + str(roundInfo['roundsCompleted'])
     temp_folder = "./src/data/saved_models/"
-    model.save(temp_folder+'/'+file_name)
+    model.save(temp_folder + '/' + file_name)
 
     file_info = []
-    file_info.append((temp_folder+file_name, s3_folder_name+'/'+file_name))
+    file_info.append(
+        (temp_folder + file_name, s3_folder_name + '/' + file_name))
     status = upload_files_s3(file_info, bucket)
     # clean up
     rmtree(temp_folder)
-    if(status == True):
+    if status:
         return file_info[0][1]
     else:
         return 'Error'

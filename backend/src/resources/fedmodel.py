@@ -92,14 +92,16 @@ class FedModel(Resource):
             # store this in s3
             status = upload_model_h5(model, "clientmodelbucket", round_info)
             del model
-            if(status == 'Error'):
+            if status == 'Error':
                 return Response(status=500)
             else:
-                client['modelFile'] = os.environ.get('S3_URL', '')+status
+                client['modelFile'] = os.environ.get('S3_URL', '') + status
+
         # method to add client row to DB
         result = addClientModel(client)
         if(result['status'] == 'Error'):
             return Response(status=500)
+
         # increment current model index
         result = incrementModelIndex()
         if(result['status'] == 'Error'):

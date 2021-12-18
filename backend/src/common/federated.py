@@ -1,4 +1,4 @@
-from common.dynamodb_handler import ConfigTable, ClientModelTable, DecimalEncoder, client
+from common.dynamodb_handler import ConfigTable, ClientModelTable, DecimalEncoder
 import json
 import ast
 from decimal import Decimal
