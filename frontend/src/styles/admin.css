@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Readex+Pro&display=swap');
+.main-container {
+  background-color: #fefcff;
+  min-height: 100vh;
+  font-family: 'Lato', sans-serif;
+}
+
+.main-title {
+  margin: 40px 20px 40px 3%;
+  font-family: 'Readex Pro', sans-serif;
+}
+
+.main-title h1 {
+  margin: 0px;
+  font-size: 40px;
+}
+
+.dash-container {
+  display: flex;
+  margin: 0% 3% 13px 3%;
+  width: 1200px;
+  font-size: 17px;
+}
+
+.card-container {
+  background-color: white;
+  box-shadow: 0 5px 10px rgba(154, 160, 185, 0.05),
+    0 15px 40px rgba(166, 173, 201, 0.2);
+  border-radius: 10px;
+  padding: 20px;
+  transition: box-shadow 0.5s;
+}
+
+.card-container:hover {
+  box-shadow: 0 5px 10px rgba(154, 160, 185, 0.4),
+    0 15px 40px rgba(166, 173, 201, 0.4);
+}
+
+.card-title {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.card-content {
+  margin-top: 20px;
+}
+
+.stats {
+  font-size: 25px;
+  margin-top: 0px;
+}
+
+.key {
+  width: 100%;
+  font-weight: bold;
+}
+
+.value {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.info {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.search-box {
+  display: flex;
+}
+
+.table-container {
+  border-radius: 7px;
+  border: 1px solid gainsboro;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  height: 210px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
