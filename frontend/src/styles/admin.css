@@ -17,8 +17,8 @@
 
 .dash-container {
   display: flex;
-  margin: 0% 3% 30px 3%;
-  width: 800px;
+  margin: 0% 3% 13px 3%;
+  width: 1200px;
   font-size: 17px;
 }
 
@@ -63,4 +63,16 @@
 .info {
   margin-top: 10px;
   font-size: 18px;
+}
+
+.search-box {
+  display: flex;
+}
+
+.table-container {
+  border-radius: 7px;
+  border: 1px solid gainsboro;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  height: 210px;
 }

@@ -5,6 +5,9 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Table from 'react-bootstrap/Table';
+import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
 import '../styles/admin.css';
@@ -27,6 +30,25 @@ const AdminDash = () => {
     lastUpdatedAt: '16/12/2021 11:59AM',
   });
 
+  const [modelList, setModelList] = useState([]);
+
+  const [sortAsc, setSortAsc] = useState(1);
+  const [searchID, setSearchID] = useState(null);
+
+  const getModelList = () => {
+    axios
+      .get('/api/modelList')
+      .then((res) => {
+        toast.success('Fetched model list');
+        setModelList(res.data);
+        console.log(modelList);
+      })
+      .catch((err) => {
+        toast.error('Error retrieving models!');
+        console.error(err.toString());
+      });
+  };
+
   const getConfig = () => {
     axios
       .get('/api/config')
@@ -43,6 +65,7 @@ const AdminDash = () => {
 
   useEffect(() => {
     getConfig();
+    getModelList();
   }, []);
 
   const updateConfig = () => {
@@ -78,6 +101,18 @@ const AdminDash = () => {
     });
   };
 
+  const renderTooltip = (props, timestamp) => {
+    return (
+      <Tooltip id="button-tooltip" {...props}>
+        Received at {new Date(timestamp).toUTCString()}.
+      </Tooltip>
+    );
+  };
+
+  const updateID = (e) => {
+    setSearchID(e.target.value == '' ? null : e.target.value);
+  };
+
   const updateValue = (event, field) => {
     console.log(field, event.target.value);
     setConfig({ ...config, [field]: event.target.value });
@@ -90,7 +125,7 @@ const AdminDash = () => {
         <h1>FedSMS Admin Panel</h1>
       </div>
       <Row className="dash-container">
-        <Col className="card-container">
+        <Col className="card-container" sm={4}>
           <div className="card-title">⚙️ Configuration</div>
           <div className="card-content">
             <Form>
@@ -136,9 +171,9 @@ const AdminDash = () => {
                     name="qfedavg"
                     type="radio"
                     checked={config.strategy === 'qfedavg'}
-                    onChange={(e) =>
-                      setConfig({ ...config, strategy: 'qfedavg' })
-                    }
+                    onChange={(e) => {
+                      setConfig({ ...config, strategy: 'qfedavg' });
+                    }}
                     id="inline-radio-2"
                   />
                 </div>
@@ -178,12 +213,93 @@ const AdminDash = () => {
             </Form>
           </div>
         </Col>
-        <Col>
-          <div></div>
+        <Col sm={8}>
+          <div className="card-container">
+            <div className="card-title">🌎 Client Models Received</div>
+            <div className="card-content">
+              <div className="card-info">
+                Search for the models and metadata sent by different clients.
+                Training set size is the message count. Currently shows last 5
+                models received. Hover over client ID for time info.
+              </div>
+              <div className="search-box mt-3">
+                <Form.Control
+                  style={{ width: '85%' }}
+                  type="text"
+                  placeholder="Enter Client ID"
+                  onChange={(e) => updateID(e)}
+                />
+                <Button
+                  variant="primary"
+                  style={{ width: '15%', marginLeft: '20px' }}
+                  onClick={(event) => {
+                    const newModelList = [...modelList];
+                    newModelList.sort(function (a, b) {
+                      return sortAsc * (b.numMessages - a.numMessages);
+                    });
+                    setSortAsc(-sortAsc);
+                    setModelList(newModelList);
+                  }}
+                >
+                  Sort {sortAsc == -1 ? '↑' : '↓'}
+                </Button>
+              </div>
+              <div className="table-container">
+                <Table striped hover size="sm">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '7%', paddingLeft: '10px' }}>#</th>
+                      <th>Round</th>
+                      <th>Model Index</th>
+                      <th style={{ width: '25%' }}>Training Set Size</th>
+                      <th>Train Loss</th>
+                      <th style={{ width: '20%' }}>Train Accuracy</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{ overflow: 'auto' }}>
+                    {modelList
+                      .filter(
+                        (e) => searchID === null || e.clientID == searchID
+                      )
+                      .slice(0, 5)
+                      .map((model, ind) => {
+                        return (
+                          <tr key={ind}>
+                            <OverlayTrigger
+                              placement="right"
+                              delay={{ show: 250, hide: 400 }}
+                              overlay={(props) =>
+                                renderTooltip(props, model.timestamp)
+                              }
+                            >
+                              <td style={{ paddingLeft: '10px' }}>
+                                {model.clientID}
+                              </td>
+                            </OverlayTrigger>
+                            <td>{model.round}</td>
+                            <td>{model.modelIndex}</td>
+                            <td>{model.numMessages}</td>
+                            <td>{model.trainLoss}</td>
+                            <td>{model.trainAcc} %</td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </Table>
+                <div style={{ textAlign: 'center' }}>
+                  <Form.Text className="text-muted">
+                    {modelList.length === 0
+                      ? 'No client models are saved at this moment..'
+                      : null}
+                  </Form.Text>
+                </div>
+              </div>
+            </div>
+          </div>
         </Col>
       </Row>
       <Row className="dash-container">
-        <Col className="card-container">
+        <Col className="card-container" sm={4}>
           <div className="card-content stats">
             <div className="key">🗺️ Completed Rounds: </div>
             <div className="value">{config.roundsCompleted}</div>
