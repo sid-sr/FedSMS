@@ -14,6 +14,7 @@ FROM base as build
 ENV SERVER_ADDR="0.0.0.0"
 ENV PORT="5000"
 ENV ENVIRONMENT="production"
+ENV S3_URL="https://clientmodelbucket.s3.us-east-2.amazonaws.com/"
 
 WORKDIR /usr/src/app/backend/src
 RUN python3 -m pip install gunicorn

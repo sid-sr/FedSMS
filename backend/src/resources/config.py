@@ -4,7 +4,7 @@ from common.dynamodb_handler import ConfigTable, DecimalEncoder
 import json
 import ast
 from decimal import Decimal
-from datetime import datetime
+import datetime
 
 
 class Config(Resource):
@@ -35,11 +35,12 @@ class Config(Resource):
                         'clients': {'Value': json_request['clients']},
                         'qfedAvg_q': {'Value': json_request['qfedAvg_q']},
                         'qfedAvg_l': {'Value': json_request['qfedAvg_l']},
-                        'lastUpdatedAt': {'Value': str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))}
+                        'lastUpdatedAt': {'Value': datetime.datetime.now().isoformat()}
                     },
                     ReturnValues="UPDATED_NEW"
                 )
             except Exception as e:
+                print(e, flush=True)
                 abort(400, 'Invalid request body')
             else:
                 return "Updated"

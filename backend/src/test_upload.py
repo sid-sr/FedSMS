@@ -1,4 +1,4 @@
-from common.util import upload_model
+from common.util import upload_model_tfjs
 from keras.models import Sequential
 from keras.layers import Dense
 
@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     print(model.summary())
 
-    if upload_model(model, "fedmodelbucket"):
+    if upload_model_tfjs(model, "fedmodelbucket"):
         print("Upload successful!")
     else:
         print("An error occurred.")
