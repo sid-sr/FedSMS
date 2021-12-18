@@ -1,11 +1,14 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from common.federated import getRoundInfo, addClientModel, incrementModelIndex
+from common.util import upload_model_h5
+
 
 import datetime
 from flask_restful import Resource
 import io
-
+import os
 from flask import Response, request
 import tensorflow.compat.v1 as tf
 import tensorflowjs as tfjs
@@ -68,15 +71,14 @@ class FedModel(Resource):
         if not self.check_headers(request.headers):
             return Response(status=400)
 
+        round_info = getRoundInfo()
         # to add to DB
         client = {
             # should be s3 URL
             "modelFile": "./src/data/saved_models/model.h5",
-
-            # Get these from DB:
-            "modelIndex": 4,
-            "round": 0,
-
+            # from db
+            "modelIndex": round_info['modelIndex'],
+            "round": round_info['roundsCompleted'],
             # data from request
             "numMessages": int(request.headers["numMessages"]),
             "trainLoss": float(request.headers["trainLoss"]),
@@ -84,17 +86,24 @@ class FedModel(Resource):
             "timestamp": datetime.datetime.now().isoformat()
         }
 
-        print(client, flush=True)
-
         with tf.Graph().as_default(), tf.Session():
             model = self.model_receiver.model
             model.summary()
-
             # store this in s3
-            model.save(client["modelFile"])
-
+            status = upload_model_h5(model, "clientmodelbucket", round_info)
             del model
+            if status == 'Error':
+                return Response(status=500)
+            else:
+                client['modelFile'] = os.environ.get('S3_URL', '') + status
 
-        # call method to add client row to DB
+        # method to add client row to DB
+        result = addClientModel(client)
+        if(result['status'] == 'Error'):
+            return Response(status=500)
 
+        # increment current model index
+        result = incrementModelIndex()
+        if(result['status'] == 'Error'):
+            return Response(status=500)
         return Response(status=200)

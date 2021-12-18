@@ -1,6 +1,7 @@
-from common.dynamodb_handler import ConfigTable, DecimalEncoder
+from common.dynamodb_handler import ConfigTable, ClientModelTable, DecimalEncoder
 import json
 import ast
+from decimal import Decimal
 
 
 def incrementModelIndex():
@@ -44,3 +45,28 @@ def incrementModelIndex():
         result['status'] = 'New value: ' + \
             str(response['Attributes']['modelIndex'])
         return result
+
+
+def getRoundInfo():
+    # get the current config info from dynamodb
+    current_config = ConfigTable.get_item(Key={'id': 0})
+    current_config = ast.literal_eval(
+        (json.dumps(current_config['Item'], cls=DecimalEncoder)))
+    info = {}
+    info['modelIndex'] = current_config['modelIndex']
+    info['roundsCompleted'] = current_config['roundsCompleted']
+    return info
+
+
+def addClientModel(data):
+    result = {}
+    try:
+        data['clientID'] = ClientModelTable.scan()['Count']
+        data = json.loads(json.dumps(data), parse_float=Decimal)
+        response = ClientModelTable.put_item(Item=data)
+    except Exception as e:
+        result['status'] = 'Error'
+        return result
+    else:
+        result['status'] = 'Added'
+    return result

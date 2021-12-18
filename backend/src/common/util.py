@@ -26,23 +26,22 @@ def upload_files_s3(file_info, bucket):
     s3 = boto3.client('s3',
                       aws_access_key_id=ACCESS_KEY,
                       aws_secret_access_key=SECRET_KEY)
-    print(os.getcwd(), flush=True)
     try:
         for local_name, s3_name in file_info:
             s3.upload_file(local_name, bucket, s3_name)
         return True
     except FileNotFoundError:
-        print("The file was not found!")
+        print("The file was not found!", flush=True)
         return False
     except NoCredentialsError:
-        print("Credentials error!")
+        print("Credentials error!", flush=True)
         return False
 
 
-def upload_model(tf_model, bucket):
+def upload_model_tfjs(tf_model, bucket):
     ''' Save a Tensorflow model as a tensorflow.js model and upload it to S3
     '''
-    temp_folder = "model_temp_folder"
+    temp_folder = "model_tfjs_temp_folder"
     tfjs.converters.save_keras_model(tf_model, temp_folder)
     file_info = []
 
@@ -53,3 +52,23 @@ def upload_model(tf_model, bucket):
     # clean up
     rmtree(temp_folder)
     return status
+
+
+def upload_model_h5(model, bucket, roundInfo):
+    ''' Save a Tensorflow model as a .h5 model file and upload it to S3
+    '''
+    file_name = 'model_' + str(roundInfo['modelIndex']) + ".h5"
+    s3_folder_name = 'round_' + str(roundInfo['roundsCompleted'])
+    temp_folder = "./src/data/saved_models/"
+    model.save(temp_folder + '/' + file_name)
+
+    file_info = []
+    file_info.append(
+        (temp_folder + file_name, s3_folder_name + '/' + file_name))
+    status = upload_files_s3(file_info, bucket)
+    # clean up
+    rmtree(temp_folder)
+    if status:
+        return file_info[0][1]
+    else:
+        return 'Error'

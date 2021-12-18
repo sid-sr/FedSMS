@@ -1,4 +1,3 @@
-import os
 from flask_restful import Resource
 from common.dynamodb_handler import ClientModelTable, DecimalEncoder
 import ast
