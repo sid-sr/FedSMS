@@ -16,7 +16,7 @@ api.add_resource(Hello, '/api/hello')
 api.add_resource(Message, '/api/message')
 api.add_resource(FedModel, '/api/model')
 api.add_resource(Config, '/api/config')
-api.add_resource(ClientModel, '/api/clientModel')
+api.add_resource(ClientModel, '/api/modelList')
 
 # Dev
 if __name__ == '__main__':
