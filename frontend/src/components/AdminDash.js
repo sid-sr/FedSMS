@@ -262,7 +262,6 @@ const AdminDash = () => {
                       .filter(
                         (e) => searchRound === null || e.round == searchRound
                       )
-                      .slice(0, 5)
                       .map((model, ind) => {
                         return (
                           <tr key={ind}>
