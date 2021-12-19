@@ -38,6 +38,32 @@ def upload_files_s3(file_info, bucket):
         return False
 
 
+def download_files_s3(s3_folder_path, local_folder_path, bucket):
+    ''' Download all files fron a folder in an S3 bucket .
+    '''
+    ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY', '')
+    SECRET_KEY = os.environ.get('AWS_SECRET_KEY', '')
+
+    s3_resource = boto3.resource('s3',
+                                 aws_access_key_id=ACCESS_KEY,
+                                 aws_secret_access_key=SECRET_KEY)
+    try:
+        bucket = s3_resource.Bucket(bucket)
+        for obj in bucket.objects.filter(Prefix=s3_folder_path):
+            save_path = local_folder_path + obj.key
+            if not os.path.exists(os.path.dirname(save_path)):
+                os.makedirs(os.path.dirname(save_path))
+            bucket.download_file(obj.key, local_folder_path + obj.key)
+        return True
+
+    except FileNotFoundError:
+        print("The file was not found!", flush=True)
+        return False
+    except NoCredentialsError:
+        print("Credentials error!", flush=True)
+        return False
+
+
 def upload_model_tfjs(tf_model, bucket):
     ''' Save a Tensorflow model as a tensorflow.js model and upload it to S3
     '''
