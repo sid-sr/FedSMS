@@ -1,7 +1,8 @@
 '''Utility classes to carry out FL'''
 
 
-from federated.avg import FedAvg
+from federated.avg import FedAvg, QFedAvg
+from common.util import upload_model_tfjs
 
 
 class FederatedClient():
@@ -39,18 +40,8 @@ class FedDriver():
     def __init__(self, config, client_objs, initial_model):
         self.config = config
         self.client_objs = client_objs
-        self.server = None
         self.initial_model = initial_model
 
-    def get_avg_scheme(self):
-        fraction = self.config['fraction']
-        dataset_size = sum([client['numMessages']
-                           for client in self.client_objs])
-
-        if self.config['strategy'] == 'fedavg':
-            return FedAvg(dataset_size, fraction)
-
-    def setup(self):
         clients = []
         for client_obj in self.client_objs:
             client_id = client_obj['clientID']
@@ -62,6 +53,19 @@ class FedDriver():
         avg_scheme = self.get_avg_scheme()
         self.server = FederatedServer(clients, avg_scheme, self.initial_model)
 
+    def get_avg_scheme(self):
+        fraction = self.config['fraction']
+        dataset_size = sum([client['numMessages']
+                           for client in self.client_objs])
+
+        if self.config['strategy'] == 'fedavg':
+            return FedAvg(dataset_size, fraction)
+        elif self.config['strategy'] == 'qfedavg':
+            return QFedAvg(dataset_size, fraction,
+                           self.config['qfedAvg_q'],
+                           self.config['qfedAvg_l'])
+
     def aggregate(self):
         self.server.aggregate()
-        # upload self.server.model to S3 as the latest global model
+        # upload self.server.model to S3 as the latest global model and return status
+        return upload_model_tfjs(self.server, 'fedmodelbucket')

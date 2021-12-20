@@ -1,3 +1,4 @@
+from common.federated.util import FedDriver
 from common.dynamodb_handler import ConfigTable, ClientModelTable, DecimalEncoder
 import json
 import ast
@@ -27,6 +28,16 @@ def incrementModelIndex():
                 ReturnValues="UPDATED_NEW"
             )
             # insert call to aggregate
+            # 1. get config object - done
+            # 2. get all clientmodels for that round
+            # 3. get the current global model
+            # 4. pass 1, 2 and 3 to the aggregator
+            client_objs = None
+            global_model = None
+            # populate each client_obj with the actual Keras model associated with it.
+            fed_driver = FedDriver(current_config, client_objs, global_model)
+            fed_driver.aggregate()
+
         else:
             # round not completed so increment only modelIndex
             response = ConfigTable.update_item(
