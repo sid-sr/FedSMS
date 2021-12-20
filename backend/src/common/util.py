@@ -1,11 +1,14 @@
 '''Utility functions used across the app code.
 '''
 
+from shutil import rmtree
+import keras
 import os
 import boto3
 from botocore.exceptions import NoCredentialsError
+import tensorflow.compat.v1 as tf
 import tensorflowjs as tfjs
-from shutil import rmtree
+tf.disable_v2_behavior()
 
 
 def get_addr(default_host='127.0.0.1', default_port='5000'):
@@ -98,3 +101,22 @@ def upload_model_h5(model, bucket, roundInfo):
         return file_info[0][1]
     else:
         return 'Error'
+
+
+def add_model_obj(path, client_objs):
+    '''Given a list of client objects, load the keras model associated with each client'''
+    for client in client_objs:
+        client['model'] = keras.models.load_model(
+            os.path.join(path, f'model_{client["modelIndex"]}.h5'))
+
+
+def download_tfjs_model(bucket):
+    '''Download a tf.js model from S3 and load it as a Keras model'''
+    # depends on pwd in local run vs docker
+    temp_folder = "./globalmodel/"
+    status = download_files_s3("", temp_folder, "fedmodelbucket")
+    if not status:
+        return False
+    model = tfjs.converters.load_keras_model(temp_folder + 'model.json')
+    rmtree(temp_folder)
+    return model

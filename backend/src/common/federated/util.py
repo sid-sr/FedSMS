@@ -1,17 +1,18 @@
 '''Utility classes to carry out FL'''
 
 
-from federated.avg import FedAvg, QFedAvg
+from .avg import FedAvg, QFedAvg
 from common.util import upload_model_tfjs
 
 
 class FederatedClient():
     '''Class to store metadata and model of a client in FL.'''
 
-    def __init__(self, client_id, model, dataset_size):
+    def __init__(self, client_id, model, dataset_size, loss):
         self.id = client_id
         self.model = model
         self.dataset_size = dataset_size
+        self.loss = loss
 
 
 class FederatedServer():
@@ -43,12 +44,12 @@ class FedDriver():
         self.initial_model = initial_model
 
         clients = []
-        for client_obj in self.client_objs:
-            client_id = client_obj['clientID']
+        for c_id, client_obj in enumerate(self.client_objs):
             dataset_size = client_obj['numMessages']
             model = client_obj['model']
-            client = FederatedClient(client_id, model, dataset_size)
-            clients.add(client)
+            loss = client_obj['trainLoss']
+            client = FederatedClient(c_id, model, dataset_size, loss)
+            clients.append(client)
 
         avg_scheme = self.get_avg_scheme()
         self.server = FederatedServer(clients, avg_scheme, self.initial_model)
@@ -68,4 +69,4 @@ class FedDriver():
     def aggregate(self):
         self.server.aggregate()
         # upload self.server.model to S3 as the latest global model and return status
-        return upload_model_tfjs(self.server, 'fedmodelbucket')
+        return upload_model_tfjs(self.server.model, 'fedmodelbucket')

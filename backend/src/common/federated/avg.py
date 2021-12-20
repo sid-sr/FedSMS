@@ -46,8 +46,8 @@ class FedAvg(AvgScheme):
         for i in range(num_layers):
             # gets broadcasted
             updated_w = 0
-            for client_w, _ in client_weights:
-                importance = s_clients[i].dataset_size / self.dataset_size
+            for cno, (client_w, _) in enumerate(client_weights):
+                importance = s_clients[cno].dataset_size / self.dataset_size
                 updated_w += importance * client_w[i]
             updated_weights.append(updated_w)
 
@@ -71,7 +71,7 @@ class QFedAvg(AvgScheme):
         client_weights = []
         cur_weights = cur_model.get_weights()
         for client in s_clients:
-            client_weights.append(client.update())
+            client_weights.append((client.model.get_weights(), client.loss))
 
         if len(client_weights) == 0:
             return
