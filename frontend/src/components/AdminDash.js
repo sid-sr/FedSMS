@@ -73,7 +73,7 @@ const AdminDash = () => {
 
     const responsePromise = axios.put('/api/config', {
       strategy: config.strategy,
-      fraction: config.fraction,
+      fraction: parseFloat(config.fraction),
       clients: config.clients,
       qfedAvg_q: config.qfedAvg_q,
       qfedAvg_l: config.qfedAvg_l,
@@ -272,9 +272,8 @@ const AdminDash = () => {
                                 renderTooltip(props, model.timestamp)
                               }
                             >
-                              <td style={{ paddingLeft: '10px' }}>
-                                {model.clientID}
-                              </td>
+                              {/* change to time info later */}
+                              <td style={{ paddingLeft: '10px' }}></td>
                             </OverlayTrigger>
                             <td>{model.round}</td>
                             <td>{model.modelIndex}</td>
