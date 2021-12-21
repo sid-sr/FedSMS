@@ -17,20 +17,6 @@ def incrementModelIndex():
         # check if it is the last client in that round
         if current_config['modelIndex'] == current_config['clients'] - 1:
 
-            # increment the modelindex(becomes 0) and also increment rounds completed
-            response = ConfigTable.update_item(
-                Key={'id': 0},
-                AttributeUpdates={
-                    'roundsCompleted': {
-                        'Value': current_config['roundsCompleted']+1
-                    },
-                    'modelIndex': {
-                        'Value': (current_config['modelIndex']+1) % current_config['clients']
-                    }
-                },
-                ReturnValues="UPDATED_NEW"
-            )
-
             round_no = current_config['roundsCompleted']
             global_model = download_tfjs_model('fedmodelbucket')
             save_path = './src/data/clientmodels/'
@@ -49,15 +35,41 @@ def incrementModelIndex():
             # carry out aggregation
             fed_driver = FedDriver(current_config, client_objs, global_model)
             fed_driver.aggregate()
+            round_stats = fed_driver.get_round_stats()
+
+            update_exp_list = [
+                "roundsCompleted = :r",
+                "modelIndex = :m",
+                "averageClientLoss = list_append (averageClientLoss, :acl)",
+                "averageClientAcc = list_append (averageClientAcc, :aca)",
+                "globalLoss = list_append (globalLoss, :gl)",
+                "globalAcc = list_append (globalAcc, :ga)"
+            ]
+
+            update_exp = "set " + ", ".join(update_exp_list)
+
+            # increment the modelindex (becomes 0), increment rounds completed and add stats
+            response = ConfigTable.update_item(
+                Key={'id': 0},
+                UpdateExpression=update_exp,
+                ExpressionAttributeValues={
+                    ':r': Decimal(current_config['roundsCompleted'] + 1),
+                    ':m': Decimal((current_config['modelIndex'] + 1) % current_config['clients']),
+                    ':ga': [Decimal(str(round_stats['globalAcc']))],
+                    ':gl': [Decimal(str(round_stats['globalLoss']))],
+                    ':aca': [Decimal(str(round_stats['averageClientAcc']))],
+                    ':acl': [Decimal(str(round_stats['averageClientLoss']))]
+                },
+                ReturnValues="UPDATED_NEW"
+            )
 
         else:
             # round not completed so increment only modelIndex
             response = ConfigTable.update_item(
                 Key={'id': 0},
-                AttributeUpdates={
-                    'modelIndex': {
-                        'Value': (current_config['modelIndex']+1) % current_config['clients']
-                    }
+                UpdateExpression="set modelIndex = :m",
+                ExpressionAttributeValues={
+                    ':m': Decimal((current_config['modelIndex']+1) % current_config['clients'])
                 },
                 ReturnValues="UPDATED_NEW"
             )

@@ -8,11 +8,12 @@ from common.util import upload_model_tfjs
 class FederatedClient():
     '''Class to store metadata and model of a client in FL.'''
 
-    def __init__(self, client_id, model, dataset_size, loss):
+    def __init__(self, client_id, model, dataset_size, loss, acc):
         self.id = client_id
         self.model = model
         self.dataset_size = dataset_size
         self.loss = loss
+        self.accuracy = acc
 
 
 class FederatedServer():
@@ -48,7 +49,8 @@ class FedDriver():
             dataset_size = client_obj['numMessages']
             model = client_obj['model']
             loss = client_obj['trainLoss']
-            client = FederatedClient(c_id, model, dataset_size, loss)
+            acc = client_obj['trainAcc']
+            client = FederatedClient(c_id, model, dataset_size, loss, acc)
             clients.append(client)
 
         avg_scheme = self.get_avg_scheme()
@@ -65,6 +67,24 @@ class FedDriver():
             return QFedAvg(dataset_size, fraction,
                            self.config['qfedAvg_q'],
                            self.config['qfedAvg_l'])
+
+    def get_round_stats(self):
+
+        # get test data.
+        # ga, gl = self.server.eval_global_model(test_data, test_labels)
+        ga, gl = 95.42, 0.46
+        acl = sum([client.loss for client in self.server.clients]) / \
+            len(self.server.clients)
+
+        aca = sum([client.accuracy for client in self.server.clients]) / \
+            len(self.server.clients)
+
+        return {
+            'globalAcc': ga,
+            'globalLoss': gl,
+            'averageClientAcc': aca,
+            'averageClientLoss': acl
+        }
 
     def aggregate(self):
         self.server.aggregate()
