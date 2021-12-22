@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-from common.federated import getRoundInfo, addClientModel, incrementModelIndex
+from common.db import getRoundInfo, addClientModel, incrementModelIndex
 from common.util import upload_model_h5
 
 
