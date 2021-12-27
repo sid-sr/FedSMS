@@ -7,6 +7,7 @@ import PulseLoader from 'react-spinners/PulseLoader';
 import '../styles/settings.css';
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
+import db from '../utils/db';
 
 function Settings() {
   const [fetchText, setFetchText] = useState('Fetch');
@@ -20,7 +21,6 @@ function Settings() {
     trainAcc: 0,
   });
   const [model, setModel] = useState(null);
-  const [trainData, setTrainData] = useState([]);
 
   const onSlide = (value) => {
     setMessageCount(value);
@@ -41,18 +41,20 @@ function Settings() {
 
   async function train() {
     setTrainModelText('Training');
-    if (trainData.length === 0 || !model) return;
+
+    const messages = await db.messages.toArray();
+    if (messages.length === 0 || !model) return;
     const x_train = [],
       y_train = [];
 
-    for (const row of trainData) {
+    for (const row of messages) {
       x_train.push(row['embedding']);
       y_train.push(1 * row['spam']);
     }
 
     const xs = tf.tensor2d(x_train, [
-      trainData.length,
-      trainData[0]['embedding'].length,
+      messages.length,
+      messages[0]['embedding'].length,
     ]);
     const ys = tf.tensor1d(y_train);
 
@@ -68,7 +70,7 @@ function Settings() {
     const stats = model.evaluate(xs, ys);
     console.log(stats[0].dataSync()[0], stats[1].dataSync()[0]);
     setTrainStats({
-      numMessages: trainData.length,
+      numMessages: messages.length,
       trainLoss: Math.round(stats[0].dataSync()[0] * 1000) / 1000,
       trainAcc: Math.round(stats[1].dataSync()[0] * 100 * 100) / 100,
     });
@@ -81,8 +83,8 @@ function Settings() {
       axios
         .get('/api/message')
         .then((res) => {
-          setTrainData(res.data);
-          console.log(trainData[0]);
+          console.log(`Added ${res.data.length} messages to IndexedDB`);
+          db.messages.bulkAdd(res.data);
           setFetchText('Fetched');
         })
         .catch((err) => {
@@ -93,7 +95,9 @@ function Settings() {
 
   async function uploading() {
     if (uploadText == 'Upload' && model) {
-      if (trainData.length === 0 || !model) return;
+      // add check later to see if model has been trained
+      if (!model) return;
+
       setUploadText('Uploading');
       await model.save(
         tf.io.http(window.location.origin + '/api/model', {
