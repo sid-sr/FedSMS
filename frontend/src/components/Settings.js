@@ -1,13 +1,17 @@
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import { useState } from 'react';
-import { FaArrowLeft, FaCheckCircle } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import {
+  FaArrowLeft,
+  FaCheckCircle,
+  FaExclamationCircle,
+} from 'react-icons/fa';
 import ClipLoader from 'react-spinners/ClipLoader';
 import PulseLoader from 'react-spinners/PulseLoader';
 import '../styles/settings.css';
-import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
 import db from '../utils/db';
+import { trainModel, loadModelFromURL, saveModel } from '../utils/train';
 
 function Settings() {
   const [fetchText, setFetchText] = useState('Fetch');
@@ -21,60 +25,41 @@ function Settings() {
     trainAcc: 0,
   });
   const [model, setModel] = useState(null);
+  const [trained, setTrained] = useState(false);
 
   const onSlide = (value) => {
     setMessageCount(value);
   };
 
+  useEffect(() => {
+    const tr = localStorage.getItem('TRAINED');
+    if (tr === null || tr === undefined) {
+      localStorage.setItem('TRAINED', false);
+      setTrained(false);
+    } else {
+      setTrained(tr);
+    }
+  }, []);
+
   async function loadModel() {
     setFetchModelText('Fetching');
-    const model = await tf.loadLayersModel('/api/download/model.json');
-    model.summary();
-    model.compile({
-      loss: 'binaryCrossentropy',
-      optimizer: tf.train.adam(0.01), // This is a standard compile config
-      metrics: ['accuracy'],
-    });
+    const model = await loadModelFromURL('/api/download/model.json');
     setModel(model);
     setFetchModelText('Fetched');
   }
 
   async function train() {
-    setTrainModelText('Training');
-
-    const messages = await db.messages.toArray();
-    if (messages.length === 0 || !model) return;
-    const x_train = [],
-      y_train = [];
-
-    for (const row of messages) {
-      x_train.push(row['embedding']);
-      y_train.push(1 * row['spam']);
+    if (trainModelText == 'Train') {
+      setTrainModelText('Training');
+      const messages = await db.messages.toArray();
+      const stats = await trainModel(messages, model, 3, 32);
+      if (stats) {
+        setTrainStats(stats);
+        setTrainModelText('Trained');
+      } else {
+        setTrainModelText('Failed');
+      }
     }
-
-    const xs = tf.tensor2d(x_train, [
-      messages.length,
-      messages[0]['embedding'].length,
-    ]);
-    const ys = tf.tensor1d(y_train);
-
-    await model.fit(xs, ys, {
-      epochs: 1,
-      batchSize: 32,
-      callbacks: {
-        onEpochEnd: async (epoch, logs) => {
-          console.log('Epoch: ' + epoch + ' Loss: ' + logs.loss);
-        },
-      },
-    });
-    const stats = model.evaluate(xs, ys);
-    console.log(stats[0].dataSync()[0], stats[1].dataSync()[0]);
-    setTrainStats({
-      numMessages: messages.length,
-      trainLoss: Math.round(stats[0].dataSync()[0] * 1000) / 1000,
-      trainAcc: Math.round(stats[1].dataSync()[0] * 100 * 100) / 100,
-    });
-    setTrainModelText('Trained');
   }
 
   async function fetching() {
@@ -94,19 +79,10 @@ function Settings() {
   }
 
   async function uploading() {
-    if (uploadText == 'Upload' && model) {
-      // add check later to see if model has been trained
-      if (!model) return;
-
+    if (uploadText == 'Upload') {
+      if (!model || !trained) return;
       setUploadText('Uploading');
-      await model.save(
-        tf.io.http(window.location.origin + '/api/model', {
-          requestInit: {
-            method: 'POST',
-            headers: trainStats,
-          },
-        })
-      );
+      await saveModel(model, window.location.origin + '/api/model', trainStats);
       setUploadText('Uploaded');
     }
   }
@@ -196,7 +172,11 @@ function Settings() {
             <PulseLoader size={5} color={'white'} />
           ) : null}
           {trainModelText == 'Trained' ? <FaCheckCircle></FaCheckCircle> : null}
+          {trainModelText == 'Failed' ? (
+            <FaExclamationCircle></FaExclamationCircle>
+          ) : null}
         </button>
+        {/* {JSON.stringify(trainStats)} */}
       </div>
     </div>
   );
