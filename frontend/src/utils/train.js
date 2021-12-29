@@ -18,7 +18,13 @@ function getTrainingData(messages) {
   return [xs, ys];
 }
 
-export const trainModel = async (messages, model, epochs, batchSize) => {
+export const trainModel = async (
+  messages,
+  model,
+  epochs,
+  batchSize,
+  callback
+) => {
   if (messages.length === 0 || !model) return;
 
   const [xs, ys] = getTrainingData(messages);
@@ -28,9 +34,10 @@ export const trainModel = async (messages, model, epochs, batchSize) => {
     epochs,
     batchSize,
     callbacks: {
-      onEpochEnd: async (epoch, logs) => {
-        console.log('Epoch: ' + epoch + ' Loss: ' + logs.loss);
-      },
+      onEpochEnd: callback,
+      // async (epoch, logs) => {
+      //   console.log('Epoch: ' + epoch + ' Loss: ' + logs.loss);
+      // },
     },
   });
 

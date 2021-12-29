@@ -25,21 +25,20 @@ function Settings() {
     trainAcc: 0,
   });
   const [model, setModel] = useState(null);
-  const [trained, setTrained] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [epochStats, setEpochStats] = useState({
+    loss: '-',
+    epoch: '-',
+    trainSetSize: 0,
+  });
+
+  useEffect(async () => {
+    setEpochStats({ ...epochStats, trainSetSize: await db.messages.count() });
+  }, []);
 
   const onSlide = (value) => {
     setMessageCount(value);
   };
-
-  useEffect(() => {
-    const tr = localStorage.getItem('TRAINED');
-    if (tr === null || tr === undefined) {
-      localStorage.setItem('TRAINED', false);
-      setTrained(false);
-    } else {
-      setTrained(tr);
-    }
-  }, []);
 
   async function loadModel() {
     setFetchModelText('Fetching');
@@ -49,10 +48,22 @@ function Settings() {
   }
 
   async function train() {
-    if (trainModelText == 'Train') {
+    if (trainModelText == 'Train Model') {
       setTrainModelText('Training');
       const messages = await db.messages.toArray();
-      const stats = await trainModel(messages, model, 3, 32);
+      const stats = await trainModel(
+        messages,
+        model,
+        3,
+        32,
+        async (epoch, logs) => {
+          setEpochStats({
+            ...epochStats,
+            epoch: epoch,
+            loss: Math.round(logs.loss * 1000) / 1000,
+          });
+        }
+      );
       if (stats) {
         setTrainStats(stats);
         setTrainModelText('Trained');
@@ -80,7 +91,7 @@ function Settings() {
 
   async function uploading() {
     if (uploadText == 'Upload') {
-      if (!model || !trained) return;
+      if (!model || trainModelText !== 'Trained') return;
       setUploadText('Uploading');
       await saveModel(model, window.location.origin + '/api/model', trainStats);
       setUploadText('Uploaded');
@@ -155,7 +166,7 @@ function Settings() {
           {uploadText == 'Uploaded' ? <FaCheckCircle></FaCheckCircle> : null}
         </button>
       </div>
-      <h3 className="cardHeading">Tests</h3>
+      <h3 className="cardHeading">Manual Tests</h3>
       <div className="settingsCard">
         <button className="cardAction" onClick={loadModel}>
           {fetchModelText} &nbsp;
@@ -176,7 +187,21 @@ function Settings() {
             <FaExclamationCircle></FaExclamationCircle>
           ) : null}
         </button>
-        {/* {JSON.stringify(trainStats)} */}
+      </div>
+      <h3 className="cardHeading">Stats</h3>
+      <div className="statsCard">
+        <div className="statsInfo">
+          <div className="statsCol">
+            <div className="statsNameRow">Messages: </div>
+            <div className="statsNameRow">Epoch: </div>
+            <div className="statsNameRow">Loss:</div>
+          </div>
+          <div className="statsCol">
+            <div className="statsValRow">{epochStats.trainSetSize}</div>
+            <div className="statsValRow">{epochStats.epoch}</div>
+            <div className="statsValRow">{epochStats.loss}</div>
+          </div>
+        </div>
       </div>
     </div>
   );
