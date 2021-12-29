@@ -10,9 +10,9 @@ class MessageSchema(Schema):
 
 
 if os.environ['ENVIRONMENT'] == 'production':
-    mock_data_file = './data/mock/messages.json'
+    mock_data_file = './data/mock/data0.json'
 else:
-    mock_data_file = './src/data/mock/messages.json'
+    mock_data_file = './src/data/mock/data0.json'
 
 schema = MessageSchema()
 mock_data = json.load(open(mock_data_file))

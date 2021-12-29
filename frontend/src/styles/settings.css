@@ -20,6 +20,26 @@
   padding: 20px;
   text-align: center;
 }
+.statsCard {
+  background-color: #0c0b0b;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+.statsInfo {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+.statsNameRow {
+  width: 120px;
+  text-align: right;
+}
+.statsValRow {
+  padding-left: 15px;
+  width: 120px;
+  text-align: left;
+}
 .cardHeading {
   font-family: 'Open Sans', sans-serif;
   color: #7a7979;
