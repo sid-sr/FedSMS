@@ -81,15 +81,13 @@ function Settings() {
       axios
         .get('/api/message')
         .then((res) => {
-          console.log(`Added ${res.data.length} messages to IndexedDB`);
-          db.messages.bulkAdd(res.data);
-
-          db.messages
-            .count()
-            .then((count) => {
+          Promise.all([db.messages.bulkAdd(res.data), db.messages.count()])
+            .then((values) => {
+              console.log(`Added ${res.data.length} messages to IndexedDB`);
               setEpochStats({
                 ...epochStats,
-                trainSetSize: count,
+                // count value
+                trainSetSize: values[1],
               });
             })
             .catch((err) => {
@@ -117,6 +115,7 @@ function Settings() {
       await db.messages.clear();
       setEpochStats({ ...epochStats, trainSetSize: await db.messages.count() });
       setDeleteText('Cleared');
+      setTimeout(() => setDeleteText('Clear DB'), 2000);
     }
   }
 
