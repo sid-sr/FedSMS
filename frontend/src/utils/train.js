@@ -35,9 +35,6 @@ export const trainModel = async (
     batchSize,
     callbacks: {
       onEpochEnd: callback,
-      // async (epoch, logs) => {
-      //   console.log('Epoch: ' + epoch + ' Loss: ' + logs.loss);
-      // },
     },
   });
 

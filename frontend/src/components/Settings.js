@@ -16,6 +16,7 @@ import { trainModel, loadModelFromURL, saveModel } from '../utils/train';
 function Settings() {
   const [fetchText, setFetchText] = useState('Fetch');
   const [uploadText, setUploadText] = useState('Upload');
+  const [deleteText, setDeleteText] = useState('Clear DB');
   const [messageCount, setMessageCount] = useState(10);
   const [fetchModelText, setFetchModelText] = useState('Fetch Model');
   const [trainModelText, setTrainModelText] = useState('Train Model');
@@ -30,6 +31,7 @@ function Settings() {
     loss: '-',
     epoch: '-',
     trainSetSize: 0,
+    spamPercent: 0,
   });
 
   useEffect(async () => {
@@ -81,6 +83,18 @@ function Settings() {
         .then((res) => {
           console.log(`Added ${res.data.length} messages to IndexedDB`);
           db.messages.bulkAdd(res.data);
+
+          db.messages
+            .count()
+            .then((count) => {
+              setEpochStats({
+                ...epochStats,
+                trainSetSize: count,
+              });
+            })
+            .catch((err) => {
+              console.error(err.toString());
+            });
           setFetchText('Fetched');
         })
         .catch((err) => {
@@ -95,6 +109,14 @@ function Settings() {
       setUploadText('Uploading');
       await saveModel(model, window.location.origin + '/api/model', trainStats);
       setUploadText('Uploaded');
+    }
+  }
+
+  async function deleteMessages() {
+    if (deleteText == 'Clear DB') {
+      await db.messages.clear();
+      setEpochStats({ ...epochStats, trainSetSize: await db.messages.count() });
+      setDeleteText('Cleared');
     }
   }
 
@@ -184,6 +206,22 @@ function Settings() {
           ) : null}
           {trainModelText == 'Trained' ? <FaCheckCircle></FaCheckCircle> : null}
           {trainModelText == 'Failed' ? (
+            <FaExclamationCircle></FaExclamationCircle>
+          ) : null}
+        </button>
+      </div>
+      <div className="settingsCard">
+        <button
+          className="cardAction"
+          // style={{ backgroundColor: '#CB4C4E' }}
+          onClick={deleteMessages}
+        >
+          {deleteText} &nbsp;
+          {deleteText == 'Clearing' ? (
+            <PulseLoader size={5} color={'white'} />
+          ) : null}
+          {deleteText == 'Cleared' ? <FaCheckCircle></FaCheckCircle> : null}
+          {deleteText == 'Failed' ? (
             <FaExclamationCircle></FaExclamationCircle>
           ) : null}
         </button>
