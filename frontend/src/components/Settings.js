@@ -21,9 +21,9 @@ function Settings() {
   const [fetchModelText, setFetchModelText] = useState('Fetch Model');
   const [trainModelText, setTrainModelText] = useState('Train Model');
   const [trainStats, setTrainStats] = useState({
-    numMessages: 0,
-    trainLoss: 0,
-    trainAcc: 0,
+    numMessages: 30,
+    trainLoss: 0.3,
+    trainAcc: 0.7,
   });
   const [model, setModel] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -103,7 +103,7 @@ function Settings() {
 
   async function uploading() {
     if (uploadText == 'Upload') {
-      if (!model || trainModelText !== 'Trained') return;
+      // if (!model || trainModelText !== 'Trained') return;
       setUploadText('Uploading');
       await saveModel(model, window.location.origin + '/api/model', trainStats);
       setUploadText('Uploaded');

@@ -3,7 +3,7 @@ from flask_restful import Api
 
 from resources.hello import Hello
 from resources.message import Message
-from resources.fedmodel import FedModel
+from resources.fedmodel import FedModel, NewModel
 from resources.config import Config
 from resources.clientModel import ClientModel
 
@@ -14,6 +14,7 @@ api = Api(app)
 
 api.add_resource(Hello, '/api/hello')
 api.add_resource(Message, '/api/message')
+api.add_resource(NewModel, '/api/model/clear')
 api.add_resource(FedModel, '/api/model')
 api.add_resource(Config, '/api/config')
 api.add_resource(ClientModel, '/api/modelList')
