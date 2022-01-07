@@ -30,11 +30,13 @@ def incrementModelIndex():
             # download all client models in that round and add it to the client obj list.
             download_files_s3(f'round_{round_no}/',
                               save_path, 'clientmodelbucket')
+
             add_model_obj(save_path + f'round_{round_no}', client_objs)
 
             # carry out aggregation
             fed_driver = FedDriver(current_config, client_objs, global_model)
             fed_driver.aggregate()
+
             round_stats = fed_driver.get_round_stats()
 
             update_exp_list = [

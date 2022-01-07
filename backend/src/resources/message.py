@@ -3,6 +3,7 @@ from flask import request, abort
 from flask_restful import Resource
 from marshmallow import Schema, fields
 import json
+from multiprocessing import Value
 
 
 class MessageSchema(Schema):
@@ -16,6 +17,7 @@ else:
 
 schema = MessageSchema()
 mock_data = json.load(open(mock_data_file))
+counter = Value('i', 0)
 
 
 class Message(Resource):
@@ -29,4 +31,15 @@ class Message(Resource):
             # fill later with data from real dataset
             pass
 
-        return mock_data
+        with counter.get_lock():
+            out = counter.value
+            counter.value += 1
+
+        if os.environ['ENVIRONMENT'] == 'production':
+            mock_data_file = f'./data/mock/testsplit/data{out % 10}.json'
+        else:
+            mock_data_file = f'./src/data/mock/testsplit/data{out % 10}.json'
+
+        return json.load(open(mock_data_file))
+
+        # return mock_data

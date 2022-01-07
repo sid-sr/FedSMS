@@ -8,7 +8,6 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 import tensorflow.compat.v1 as tf
 import tensorflowjs as tfjs
-tf.disable_v2_behavior()
 
 
 def get_addr(default_host='127.0.0.1', default_port='5000'):
@@ -114,9 +113,11 @@ def download_tfjs_model(bucket):
     '''Download a tf.js model from S3 and load it as a Keras model'''
     # depends on pwd in local run vs docker
     temp_folder = "./globalmodel/"
-    status = download_files_s3("", temp_folder, "fedmodelbucket")
+    status = download_files_s3("", temp_folder, bucket)
     if not status:
         return False
     model = tfjs.converters.load_keras_model(temp_folder + 'model.json')
+    # model.compile(optimizer='adam', loss='binary_crossentropy')
+    tf.reset_default_graph()
     rmtree(temp_folder)
     return model

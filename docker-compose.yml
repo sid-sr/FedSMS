@@ -8,7 +8,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
       target: base
-    command: python3 ./src/app.py
+    command: python3 -u ./src/app.py
     container_name: api
     image: federated-flask-api
     volumes:
@@ -22,6 +22,7 @@ services:
       ENVIRONMENT: development
       PORT: 5000
       S3_URL: https://clientmodelbucket.s3.us-east-2.amazonaws.com/
+      PYTHONUNBUFFERED: 1
 
   client:
     build:

@@ -13,7 +13,7 @@ from flask import Response, request
 import tensorflow.compat.v1 as tf
 import tensorflowjs as tfjs
 import werkzeug.formparser
-tf.disable_v2_behavior()
+# tf.disable_v2_behavior()
 
 
 class ModelReceiver(object):

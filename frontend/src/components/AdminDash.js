@@ -74,9 +74,9 @@ const AdminDash = () => {
     const responsePromise = axios.put('/api/config', {
       strategy: config.strategy,
       fraction: parseFloat(config.fraction),
-      clients: config.clients,
-      qfedAvg_q: config.qfedAvg_q,
-      qfedAvg_l: config.qfedAvg_l,
+      clients: parseInt(config.clients),
+      qfedAvg_q: parseFloat(config.qfedAvg_q),
+      qfedAvg_l: parseFloat(config.qfedAvg_l),
     });
     toast.promise(responsePromise, {
       pending: {
