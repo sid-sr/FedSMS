@@ -49,20 +49,18 @@ class Reset(Resource):
             )
 
             # # copy the 2 model files from fedmodelbucket to the new s3 folder
-            # bucket = s3.Bucket('previoustrialdata')
-            # copy_source = {
-            #     'Bucket': 'fedmodelbucket',
-            #     'Key': 'group1-shard1of1.bin'
-            # }
-            # bucket.copy(
-            #     copy_source, json_request['execName']+'-'+timestamp+'/group1-shard1of1.bin')
-
-            # copy_source = {
-            #     'Bucket': 'fedmodelbucket',
-            #     'Key': 'model.json'
-            # }
-            # bucket.copy(
-            #     copy_source, json_request['execName']+'-'+timestamp+'/model.json')
+            src = s3.Bucket('fedmodelbucket')
+            dst = s3.Bucket('previoustrialdata')
+            for k in src.objects.all():
+                # copy stuff to your destination here
+                copy_source = {
+                    'Bucket': 'fedmodelbucket',
+                    'Key': k.key
+                }
+                dst.copy(
+                    copy_source, json_request['execName']+'-'+timestamp+'/'+k.key)
+                # then delete the source key
+                k.delete()
 
             # clear the client model table
             scan = ClientModelTable.scan()
@@ -98,9 +96,9 @@ class Reset(Resource):
             bucket = s3.Bucket('clientmodelbucket')
             bucket.objects.all().delete()
 
-            # delete the model files from the fedmodelbucket
-            bucket = s3.Bucket('fedmodelbucket')
-            bucket.objects.all().delete()
+            # # delete the model files from the fedmodelbucket
+            # bucket = s3.Bucket('fedmodelbucket')
+            # bucket.objects.all().delete()
 
         except Exception as e:
             print(e, flush=True)

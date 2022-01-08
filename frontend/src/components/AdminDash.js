@@ -34,8 +34,7 @@ const AdminDash = () => {
     const handleBINInput = (e) => {
         setSelectedFileBIN(e.target.files[0]);
     }
-    const handleUpload = async (file) => {
-
+    const handleUpload = async (file, filename) => {
         var s3 = new AWS.S3({
             apiVersion: '2006-03-01',
             params: { Bucket: 'fedmodelbucket' }
@@ -44,7 +43,7 @@ const AdminDash = () => {
             ACL: 'public-read',
             Body: file,
             Bucket: 'fedmodelbucket',
-            Key: file.name
+            Key: filename
         };
         s3.putObject(params)
             .send((err) => {
@@ -114,8 +113,8 @@ const AdminDash = () => {
                 execName: execName
             }));
             const configPromise = responsePromise.then(function () {
-                handleUpload(selectedFileJSON);
-                handleUpload(selectedFileBIN);
+                handleUpload(selectedFileJSON, 'model.json');
+                handleUpload(selectedFileBIN, 'group1-shard1of1.bin');
             })
             toast.promise(configPromise, {
                 pending: {
