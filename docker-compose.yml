@@ -36,6 +36,8 @@ services:
       - ./frontend:/usr/src/app/frontend
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
       HOST_ADDR: api
       S3_URL: https://fedmodelbucket.s3.us-east-2.amazonaws.com

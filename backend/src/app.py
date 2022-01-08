@@ -6,6 +6,7 @@ from resources.message import Message
 from resources.fedmodel import FedModel, NewModel
 from resources.config import Config
 from resources.clientModel import ClientModel
+from resources.reset import Reset
 
 from common.util import get_addr
 
@@ -18,6 +19,7 @@ api.add_resource(NewModel, '/api/model/clear')
 api.add_resource(FedModel, '/api/model')
 api.add_resource(Config, '/api/config')
 api.add_resource(ClientModel, '/api/modelList')
+api.add_resource(Reset, '/api/reset')
 
 # Dev
 if __name__ == '__main__':
