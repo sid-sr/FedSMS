@@ -1,19 +1,53 @@
+/* eslint-disable indent */
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from 'react';
+import AWS from 'aws-sdk';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Row from 'react-bootstrap/Row';
 import Table from 'react-bootstrap/Table';
 import Tooltip from 'react-bootstrap/Tooltip';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { ToastContainer, toast } from 'react-toastify';
-import '../styles/admin.css';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../styles/admin.css';
 
 const AdminDash = () => {
+  AWS.config.update({
+    region: 'us-east-2',
+    credentials: new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: 'us-east-2:7b076382-e0f8-4034-947b-5cda3e551910',
+    }),
+  });
+
+  const [selectedFileJSON, setSelectedFileJSON] = useState(null);
+  const [selectedFileBIN, setSelectedFileBIN] = useState(null);
+
+  const handleJSONInput = (e) => {
+    setSelectedFileJSON(e.target.files[0]);
+  };
+
+  const handleBINInput = (e) => {
+    setSelectedFileBIN(e.target.files[0]);
+  };
+  const handleUpload = async (file, filename) => {
+    var s3 = new AWS.S3({
+      apiVersion: '2006-03-01',
+      params: { Bucket: 'fedmodelbucket' },
+    });
+    const params = {
+      ACL: 'public-read',
+      Body: file,
+      Bucket: 'fedmodelbucket',
+      Key: filename,
+    };
+    s3.putObject(params).send((err) => {
+      if (err) console.log(err);
+    });
+  };
   const [config, setConfig] = useState({
     id: 1,
     modelIndex: 0,
@@ -30,10 +64,15 @@ const AdminDash = () => {
     lastUpdatedAt: '16/12/2021 11:59AM',
   });
 
+  const [execName, setExecName] = useState();
   const [modelList, setModelList] = useState([]);
 
   const [sortAsc, setSortAsc] = useState(1);
   const [searchRound, setSearchRound] = useState(null);
+
+  const updateExecName = (e) => {
+    setExecName(e.target.value);
+  };
 
   const getModelList = () => {
     axios
@@ -61,6 +100,43 @@ const AdminDash = () => {
         toast.error('Error retrieving configuration!');
         console.error(err.toString());
       });
+  };
+
+  const resetConfig = () => {
+    if (config.modelIndex != 0) {
+      toast.error('Cannot reset when round is in progress!');
+    } else {
+      const responsePromise = Promise.resolve(
+        axios.put('/api/reset', {
+          execName: execName,
+        })
+      );
+      const configPromise = responsePromise.then(function () {
+        handleUpload(selectedFileJSON, 'model.json');
+        handleUpload(selectedFileBIN, 'group1-shard1of1.bin');
+      });
+      toast.promise(configPromise, {
+        pending: {
+          render() {
+            return 'Request sent..';
+          },
+          icon: '⌛',
+        },
+        success: {
+          render({ res }) {
+            getConfig();
+            return 'Reset configuration!';
+          },
+          icon: '🟢',
+        },
+        error: {
+          render({ data }) {
+            return 'Error resetting configuration!';
+          },
+          icon: '⭕',
+        },
+      });
+    }
   };
 
   useEffect(() => {
@@ -125,7 +201,7 @@ const AdminDash = () => {
         <h1>FedSMS Admin Panel</h1>
       </div>
       <Row className="dash-container">
-        <Col className="card-container" sm={4}>
+        <Col className="card-container">
           <div className="card-title">⚙️ Configuration</div>
           <div className="card-content">
             <Form>
@@ -213,7 +289,7 @@ const AdminDash = () => {
             </Form>
           </div>
         </Col>
-        <Col sm={8}>
+        <Col xs={6}>
           <div className="card-container">
             <div className="card-title">🌎 Client Models Received</div>
             <div className="card-content">
@@ -306,9 +382,45 @@ const AdminDash = () => {
             </div>
           </div>
         </Col>
+        <Col className="card-container reset-container">
+          <div className="card-title">🔄 Reset</div>
+          <div className="card-content">
+            <Form>
+              <Form.Group className="mb-4">
+                <Form.Label>Name of Execution</Form.Label>
+                <Form.Control type="text" onChange={(e) => updateExecName(e)} />
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label>New JSON file for global model</Form.Label>
+                <Form.Control type="file" onChange={handleJSONInput} />
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label>New .bin file for global model</Form.Label>
+                <Form.Control type="file" onChange={handleBINInput} />
+              </Form.Group>
+              <Button
+                style={{
+                  width: '100%',
+                  margin: '10px 0px',
+                  backgroundColor: '#CB4C4E',
+                }}
+                variant="danger"
+                onClick={resetConfig}
+              >
+                Reset all data
+              </Button>
+              {/* <div className="text-muted">
+                <p style={{ fontSize: '14px' }}>
+                  Note: All parameters will be reset to the original values and
+                  models will be deleted.
+                </p>
+              </div> */}
+            </Form>
+          </div>
+        </Col>
       </Row>
       <Row className="dash-container">
-        <Col className="card-container" sm={4}>
+        <Col className="card-container" sm={3}>
           <div className="card-content stats">
             <div className="key">🗺️ Completed Rounds: </div>
             <div className="value">{config.roundsCompleted}</div>
@@ -325,6 +437,41 @@ const AdminDash = () => {
         </Col>
         <Col></Col>
       </Row>
+      {/* <Row className="dash-container">
+        <Col className="card-container" sm={4}>
+          <div className="card-title">🔄 Reset</div>
+          <div className="card-content">
+            <Form>
+              <Form.Group className="mb-4">
+                <Form.Label>Name of Execution</Form.Label>
+                <Form.Control type="text" onChange={(e) => updateExecName(e)} />
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label>New JSON file for global model</Form.Label>
+                <Form.Control type="file" onChange={handleJSONInput} />
+              </Form.Group>
+              <Form.Group className="mb-4">
+                <Form.Label>New .bin file for global model</Form.Label>
+                <Form.Control type="file" onChange={handleBINInput} />
+              </Form.Group>
+              <Button
+                style={{ width: '100%', margin: '10px 0px' }}
+                variant="primary"
+                onClick={resetConfig}
+              >
+                Reset all data
+              </Button>
+              <div className="text-muted">
+                <p style={{ fontSize: '14px' }}>
+                  Note: All parameters will be reset to the original values and
+                  models will be deleted.
+                </p>
+              </div>
+            </Form>
+          </div>
+        </Col>
+        <Col></Col>
+      </Row> */}
     </div>
   );
 };
