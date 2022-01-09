@@ -1,26 +1,22 @@
 from flask_restful import Resource
-import decimal
 from flask import request, abort
 from common.dynamodb_handler import ClientModelTable, ConfigTable, DecimalEncoder
 import json
 import ast
-from decimal import Decimal
 import datetime
 import boto3
-from boto3.dynamodb.types import TypeSerializer, TypeDeserializer
-import sys
 
 
 class Reset(Resource):
 
-    def getConfigData(self):
+    def get_config_data(self):
         current_config = ConfigTable.get_item(Key={'id': 0})
         # convert the decimal objects from dynamodb
         decimal_encoded = ast.literal_eval(
             (json.dumps(current_config['Item'], cls=DecimalEncoder)))
         return decimal_encoded
 
-    def getClientModelData(self):
+    def get_client_model_data(self):
         # get all the records in the client_model table
         response = ClientModelTable.scan()
         # convert the decimal objects from dynamodb
@@ -34,18 +30,18 @@ class Reset(Resource):
             timestamp = datetime.datetime.now().isoformat()
             # write the existing config record as a json into s3
             s3 = boto3.resource('s3')
-            s3object = s3.Object('previoustrialdata',
-                                 json_request['execName']+'-'+timestamp+'/config.json')
+            s3object = s3.Object(
+                'previoustrialdata', json_request['execName'] + '-' + timestamp + '/config.json')
 
             s3object.put(
-                Body=(bytes(json.dumps(self.getConfigData()).encode('UTF-8')))
+                Body=(bytes(json.dumps(self.get_config_data()).encode('UTF-8')))
             )
 
             # write the existing client model data as a json into s3
-            s3object = s3.Object('previoustrialdata',
-                                 json_request['execName']+'-'+timestamp+'/clientmodel.json')
+            s3object = s3.Object(
+                'previoustrialdata', json_request['execName'] + '-' + timestamp + '/clientmodel.json')
             s3object.put(
-                Body=(bytes(json.dumps(self.getClientModelData()).encode('UTF-8')))
+                Body=(bytes(json.dumps(self.get_client_model_data()).encode('UTF-8')))
             )
 
             # # copy the 2 model files from fedmodelbucket to the new s3 folder
@@ -58,7 +54,7 @@ class Reset(Resource):
                     'Key': k.key
                 }
                 dst.copy(
-                    copy_source, json_request['execName']+'-'+timestamp+'/'+k.key)
+                    copy_source, json_request['execName'] + '-' + timestamp + '/' + k.key)
                 # then delete the source key
                 k.delete()
 
