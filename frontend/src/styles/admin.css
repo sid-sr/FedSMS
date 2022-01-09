@@ -78,11 +78,15 @@
   border: 1px solid gainsboro;
   margin-top: 20px;
   margin-bottom: 8px;
-  height: 210px;
+  height: 440px;
   overflow: scroll;
   overflow-x: hidden;
 }
 
 .reset-container {
-  height: 440.5px;
+  height: 100%;
+}
+
+.chart-wrapper {
+  margin-top: 30px;
 }
