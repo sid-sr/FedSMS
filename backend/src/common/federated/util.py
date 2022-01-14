@@ -93,7 +93,7 @@ class FedDriver():
             len(self.server.clients)
 
         return {
-            'globalAcc': ga,
+            'globalAcc': ga * 100,
             'globalLoss': gl,
             'averageClientAcc': aca,
             'averageClientLoss': acl

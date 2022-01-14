@@ -5,6 +5,7 @@ import json
 import ast
 from decimal import Decimal
 from boto3.dynamodb.conditions import Key
+import shutil
 
 
 def incrementModelIndex():
@@ -64,7 +65,9 @@ def incrementModelIndex():
                 },
                 ReturnValues="UPDATED_NEW"
             )
-
+            # clean up
+            shutil.rmtree(save_path + f'round_{round_no}')
+        
         else:
             # round not completed so increment only modelIndex
             response = ConfigTable.update_item(
@@ -102,6 +105,7 @@ def addClientModel(data):
         data = json.loads(json.dumps(data), parse_float=Decimal)
         response = ClientModelTable.put_item(Item=data)
     except Exception as e:
+        print(e, flush=True)
         result['status'] = 'Error'
         return result
     else:
