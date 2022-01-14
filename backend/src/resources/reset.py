@@ -5,6 +5,8 @@ import json
 import ast
 import datetime
 import boto3
+import os
+from decimal import Decimal
 
 
 class Reset(Resource):
@@ -28,8 +30,13 @@ class Reset(Resource):
         try:
             json_request = request.get_json(force=True)
             timestamp = datetime.datetime.now().isoformat()
+
+            ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY', '')
+            SECRET_KEY = os.environ.get('AWS_SECRET_KEY', '')
+
             # write the existing config record as a json into s3
-            s3 = boto3.resource('s3')
+            s3 = boto3.resource('s3',  aws_access_key_id=ACCESS_KEY,
+                      aws_secret_access_key=SECRET_KEY)
             s3object = s3.Object(
                 'previoustrialdata', json_request['execName'] + '-' + timestamp + '/config.json')
 
@@ -74,11 +81,11 @@ class Reset(Resource):
                 Key={'id': 0},
                 AttributeUpdates={
                     'strategy': {'Value': 'fedavg'},
-                    'fraction': {'Value': '1'},
-                    'clients': {'Value': '5'},
-                    'qfedAvg_q': {'Value': '0.1'},
-                    'qfedAvg_l': {'Value': '1'},
-                    'roundsCompleted': {'Value': '0'},
+                    'fraction': {'Value': Decimal(1)},
+                    'clients': {'Value': Decimal(5)},
+                    'qfedAvg_q': {'Value': Decimal(str(0.1))},
+                    'qfedAvg_l': {'Value': Decimal(str(1))},
+                    'roundsCompleted': {'Value': Decimal(0)},
                     'averageClientAcc': {'Value': []},
                     'averageClientLoss': {'Value': []},
                     'globalAcc': {'Value': []},
