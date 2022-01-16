@@ -4,6 +4,8 @@
 from .avg import FedAvg, QFedAvg
 from common.util import upload_model_tfjs
 import numpy as np
+from common.util import download_files_s3
+import os
 
 
 class FederatedClient():
@@ -71,21 +73,26 @@ class FedDriver():
                            self.config['qfedAvg_l'])
 
     def get_global_test_data(self, path):
+        TEST_DATA_BUCKET = os.environ.get('TEST_DATA_BUCKET', '')
+
+        download_files_s3(f'{TEST_DATA_BUCKET}/global/', path, 'datasplits')
         with open(path + 'test_dataset.npy', 'rb') as f:
             test_data = np.load(f)
         with open(path + 'test_labels.npy', 'rb') as f:
             test_labels = np.load(f)
+
+        os.remove(path + f"{TEST_DATA_BUCKET}/global/test_dataset.npy")
+        os.remove(path + f"{TEST_DATA_BUCKET}/global/test_labels.npy")
+
         return test_data, test_labels
 
     def get_round_stats(self):
-
-        path = './src/data/mock/global/'
+        path = './src/data/'
         test_data, test_labels = self.get_global_test_data(path)
 
         # get test data.
         ga, gl = self.server.eval_global_model(test_data, test_labels)
 
-        # ga, gl = 95.42, 0.46
         acl = sum([client.loss for client in self.server.clients]) / \
             len(self.server.clients)
 

@@ -41,7 +41,7 @@ def upload_files_s3(file_info, bucket):
 
 
 def download_files_s3(s3_folder_path, local_folder_path, bucket):
-    ''' Download all files fron a folder in an S3 bucket .
+    ''' Download all files from a folder in an S3 bucket .
     '''
     ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY', '')
     SECRET_KEY = os.environ.get('AWS_SECRET_KEY', '')
@@ -55,7 +55,8 @@ def download_files_s3(s3_folder_path, local_folder_path, bucket):
             save_path = local_folder_path + obj.key
             if not os.path.exists(os.path.dirname(save_path)):
                 os.makedirs(os.path.dirname(save_path))
-            bucket.download_file(obj.key, local_folder_path + obj.key)
+            if obj.key[-1] != '/':
+                bucket.download_file(obj.key, local_folder_path + obj.key)
         return True
 
     except FileNotFoundError:
