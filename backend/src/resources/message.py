@@ -13,16 +13,11 @@ class MessageSchema(Schema):
     count = fields.Str(required=False)
 
 
-if os.environ['ENVIRONMENT'] == 'production':
-    mock_data_file = './data/mock/data0.json'
-else:
-    mock_data_file = './src/data/mock/data0.json'
-
 schema = MessageSchema()
 # read data0.json from s3
 ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY', '')
 SECRET_KEY = os.environ.get('AWS_SECRET_KEY', '')
-COUNT = os.environ.get('DATASPLIT_COUNT', '')
+COUNT = int(os.environ.get('DATASPLIT_COUNT', ''))
 DATASPLITPATH = os.environ.get('DATASLIT_PATH', '')
 
 s3 = boto3.resource('s3',  aws_access_key_id=ACCESS_KEY,
@@ -40,7 +35,7 @@ class Message(Resource):
         if errors:
             abort(400, errors)
 
-        obj = s3.Object(bucket, DATASPLITPATH+str(out % COUNT)+'.json')
+        obj = s3.Object(bucket, 'test/splits/'+'data'+str(out % COUNT)+'.json')
         data = obj.get()['Body'].read()
         data = json.loads(data)
         with counter.get_lock():
