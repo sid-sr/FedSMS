@@ -1,0 +1,26 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&family=Ubuntu:wght@500&display=swap');
+.container {
+  padding: 18px;
+  color: white;
+  background-color: black;
+  min-height: 100vh;
+}
+.homeCard {
+  background-color: #0c0b0b;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 70px;
+  text-align: left;
+}
+.backText {
+  margin-top: -25px;
+  margin-left: auto;
+  text-align: left;
+  text-decoration: none;
+  color: #007aff;
+  font-size: 17px;
+}
+.logo {
+  margin-left: 450px;
+} */

@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&family=Ubuntu:wght@500&display=swap');
+.container {
+  padding: 18px;
+  color: white;
+  background-color: black;
+  min-height: 100vh;
+}
+.settingsHeading {
+  color: white;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.next {
+  margin-right: auto;
+  padding-right: 10%;
+}
+.homeCard {
+  background-color: #0c0b0b;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  text-align: left;
+}
+.cardHeading {
+  font-family: 'Open Sans', sans-serif;
+  color: #7a7979;
+  font-size: 19px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.nextMessage {
+  color: #007aff;
+  font-size: '50px';
+}
+
+.divider {
+  background: gray;
+  margin-top: 25px;
+}
+.divider2 {
+  background: gray;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.alignleft {
+  float: left;
+}
+.alignright {
+  float: right;
+}
+
+.numberSlider {
+  width: 98%;
+  margin-left: auto;
+}
+.cardAction {
+  background-color: #007aff;
+  color: white;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  border-radius: 15px;
+  border: none;
+  width: 11em;
+  height: 2.5em;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.backText {
+  margin-top: -5px;
+  text-decoration: none;
+  color: #007aff;
+  font-size: 17px;
+}
+
+a {
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif;
+  color: #7a7979;
+  font-size: 19px;
+  font-weight: bold;
+  margin-top: 15px;
+}
