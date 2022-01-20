@@ -54,7 +54,7 @@ function Display() {
             <div className="homeCard">
                 {fetchMessage
                     ? Object.values(fetchMessage).map((mes, index) => {
-                        const short = (mes.message || '').substring(0, 38);
+                        const short = (mes.message || '').substring(0, 35);
                         return (
                             <div key={index} onClick={() => diplayMessage(mes)}>
                                 {/* <br /> */}
