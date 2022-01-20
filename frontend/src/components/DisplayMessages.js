@@ -31,8 +31,7 @@ function Display() {
     };
 
     const diplayMessage = (mes) => {
-        console.log(mes)
-        navigate('/eachmessage', { state: { message: 'testing' } });
+        navigate('/EachMessage', { state: { message: mes.message } });
     }
     useEffect(() => {
         getMessage();
@@ -59,7 +58,7 @@ function Display() {
                         return (
                             <div key={index} onClick={() => diplayMessage(mes)}>
                                 {/* <br /> */}
-                                <a href="/EachMessage" className="nextMessage" key={index}>
+                                <a className="nextMessage" key={index}>
                                     <FaUserCircle
                                         size={38}
                                         style={{ marginBottom: '2px', color: '#D1D3D4' }}
@@ -74,9 +73,7 @@ function Display() {
                                     >
                                         {short}
                                     </span>
-                                    <a href="/EachMessage" className="next">
-                                        <IoIosArrowForward></IoIosArrowForward>
-                                    </a>
+                                    <IoIosArrowForward></IoIosArrowForward>
                                 </a>
                                 <hr className="divider2"></hr>
                             </div>

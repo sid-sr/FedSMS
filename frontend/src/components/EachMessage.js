@@ -23,7 +23,7 @@ const EachMessage = () => {
             <br></br>
             <br></br>
             <div className="homeNew">
-                <span>{state ? state.message : null}</span>
+                <span>{state ? state.message : ''}</span>
             </div>
         </div>
     );
