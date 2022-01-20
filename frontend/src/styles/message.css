@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&family=Ubuntu:wght@500&display=swap');
+.container {
+  padding: 18px;
+  color: white;
+  background-color: black;
+  min-height: 100vh;
+}
+.home {
+  background-color: #222121;
+  border-radius: 1px;
+  margin-left: -18px;
+  margin-right: -18px;
+  margin-top: -25px;
+  padding: 70px;
+  text-align: left;
+}
+.homeNew {
+  background-color: #222121;
+  border-radius: 20px;
+  margin-left: auto;
+  margin-right: 100px;
+  margin-bottom: 60px;
+  padding: 70px;
+  text-align: left;
+}
+.back {
+  float: left;
+  margin-top: -20px;
+  margin-left: -10%;
+  text-align: left;
+  text-decoration: none;
+  color: #007aff;
+  font-size: 25px;
+}
+.Logo {
+  margin-top: -25px;
+  float: left;
+  margin-left: 40%;
+}

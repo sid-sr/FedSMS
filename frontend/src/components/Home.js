@@ -20,7 +20,7 @@ function Home() {
         <a href="/DisplayMessages" style={{ marginLeft: '20px' }}>
           <span>All Messages</span>
           <IoIosArrowForward
-            style={{ marginBottom: '2px', marginLeft: '200px' }}
+            style={{ marginBottom: '2px', float: 'right', marginRight: '10%' }}
           ></IoIosArrowForward>
         </a>
         <hr className="divider2" />
@@ -33,7 +33,7 @@ function Home() {
         <a href="/Junk" style={{ marginLeft: '20px' }}>
           <span>Junk</span>
           <IoIosArrowForward
-            style={{ marginBottom: '2px', marginLeft: '275px' }}
+            style={{ marginBottom: '2px', float: 'right', marginRight: '10%' }}
           ></IoIosArrowForward>
         </a>
       </div>

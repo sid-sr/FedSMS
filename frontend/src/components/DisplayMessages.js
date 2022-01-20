@@ -6,7 +6,9 @@ import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import '../styles/home.css';
+import '../styles/display.css';
+import EachMessage from './EachMessage';
+
 function Display() {
   const [fetchMessage, setFetchMessage] = useState({
     message: {
@@ -20,7 +22,7 @@ function Display() {
       .then((response) => {
         toast.success('Messages Fetched');
         setFetchMessage(response.data);
-        console.log(fetchMessage);
+        // console.log(response.data);
       })
       .catch((err) => {
         toast.error('Error Retrieving Messages!');
@@ -31,6 +33,7 @@ function Display() {
   useEffect(() => {
     getMessage();
   }, []);
+  const data = 'hi';
 
   return (
     <div className="container">
@@ -46,29 +49,40 @@ function Display() {
             size={38}
             style={{ marginBottom: '2px', color: '#D1D3D4' }}
           ></FaUserCircle> */}
-
-      {fetchMessage
-        ? fetchMessage.map((mes, index) => {
-            return (
-              <div className="homeCard" key={index}>
-                {/* <br /> */}
-                <a href="/" className="nextMessage" key={index}>
-                  <FaUserCircle
-                    size={38}
-                    style={{ marginBottom: '2px', color: '#D1D3D4' }}
-                  ></FaUserCircle>
-                  {mes.message}
-                  <a href="/EachMessage" style={{ marginLeft: '20px' }}></a>
-                  <a href="/EachMessage" className="next">
-                    <IoIosArrowForward
-                      style={{ marginBottom: '2px', marginLeft: '275px' }}
-                    ></IoIosArrowForward>
+      <div className="homeCard">
+        {fetchMessage
+          ? Object.values(fetchMessage).map((mes, index) => {
+              const short = (mes.message || '').substring(0, 38);
+              return (
+                <div key={index}>
+                  {/* <br /> */}
+                  <a href="/EachMessage" className="nextMessage" key={index}>
+                    <FaUserCircle
+                      size={38}
+                      style={{ marginBottom: '2px', color: '#D1D3D4' }}
+                    ></FaUserCircle>
+                    <span
+                      style={{
+                        marginLeft: '15px',
+                        fontSize: '15px',
+                        color: '#7a7979',
+                        float: 'center',
+                      }}
+                    >
+                      {short}
+                    </span>
+                    <a href="/EachMessage" style={{ marginLeft: '20px' }}></a>
+                    <EachMessage data={data} />
+                    <a href="/EachMessage" className="next">
+                      <IoIosArrowForward></IoIosArrowForward>
+                    </a>
                   </a>
-                </a>
-              </div>
-            );
-          })
-        : null}
+                  <hr className="divider2"></hr>
+                </div>
+              );
+            })
+          : null}
+      </div>
     </div>
   );
 }
