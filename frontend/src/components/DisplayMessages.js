@@ -5,9 +5,9 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import '../styles/display.css';
-import EachMessage from './EachMessage';
 
 function Display() {
   const [fetchMessage, setFetchMessage] = useState({
@@ -15,7 +15,7 @@ function Display() {
       someRandomQueryParam: [],
     },
   });
-
+  let navigate = useNavigate();
   const getMessage = () => {
     axios
       .get('/api/message')
@@ -29,17 +29,24 @@ function Display() {
         console.error(err.toString());
       });
   };
+  const diplayMessage = (mes) => {
+    navigate('/EachMessage', {
+      state: {
+        message: mes.message,
+        spam: mes.spam,
+      },
+    });
+  };
 
   useEffect(() => {
     getMessage();
   }, []);
-  const data = 'hi';
 
   return (
     <div className="container">
       <a href="/home" className="backText">
         <IoIosArrowBack style={{ marginBottom: '2px' }}></IoIosArrowBack>
-        <span>Filters</span>
+        <span>Back</span>
       </a>
       <h1 className="settingsHeading">Messages</h1>
       <hr className="divider" />
@@ -52,9 +59,9 @@ function Display() {
       <div className="homeCard">
         {fetchMessage
           ? Object.values(fetchMessage).map((mes, index) => {
-              const short = (mes.message || '').substring(0, 38);
+              const short = (mes.message || '').substring(0, 35);
               return (
-                <div key={index}>
+                <div key={index} onClick={() => diplayMessage(mes)}>
                   {/* <br /> */}
                   <a href="/EachMessage" className="nextMessage" key={index}>
                     <FaUserCircle
@@ -71,13 +78,12 @@ function Display() {
                     >
                       {short}
                     </span>
-                    <a href="/EachMessage" style={{ marginLeft: '20px' }}></a>
-                    <EachMessage data={data} />
-                    <a href="/EachMessage" className="next">
+                    {/* <a href="/EachMessage" style={{ marginLeft: '20px' }}></a> */}
+                    <div className="next">
                       <IoIosArrowForward></IoIosArrowForward>
-                    </a>
+                    </div>
                   </a>
-                  <hr className="divider2"></hr>
+                  <hr className="div2"></hr>
                 </div>
               );
             })

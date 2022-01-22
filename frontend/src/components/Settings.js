@@ -66,7 +66,7 @@ function Settings() {
 
   return (
     <div className="container">
-      <a href="/" className="backText">
+      <a href="/home" className="backText">
         <FaArrowLeft style={{ marginBottom: '2px' }}></FaArrowLeft>
         <span>Back</span>
       </a>

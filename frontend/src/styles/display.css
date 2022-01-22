@@ -42,7 +42,7 @@
   background: gray;
   margin-top: 25px;
 }
-.divider2 {
+.div2 {
   background: gray;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -60,6 +60,7 @@
 .next {
   margin-top: 5px;
   float: right;
+  color: #7a7979;
   /* margin-right: 60px; */
   padding-right: 10%;
 }
