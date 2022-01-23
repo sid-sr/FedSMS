@@ -4,16 +4,18 @@ import { FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import '../styles/messages.css';
-import db from '../utils/db';
 
-const Messages = ({ title = 'Messages', messages = [] }) => {
+const Messages = ({ title, messages = [] }) => {
   let navigate = useNavigate();
   const diplayMessage = (mes,index) => {
     navigate('/message', {
       state: {
         message: mes.message,
         spam: mes.spam,
-        index: index
+        index: index,
+        page: title,
+        name: mes.name,
+        time: mes.time
       },
     });
   };
