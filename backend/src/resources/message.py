@@ -5,6 +5,7 @@ from marshmallow import Schema, fields
 import json
 from multiprocessing import Value
 import boto3
+from common.util import sender_name, random_date
 
 
 class MessageSchema(Schema):
@@ -42,4 +43,9 @@ class Message(Resource):
         with counter.get_lock():
             counter.value += 1
 
+        # assign random names and times
+        for message in data:
+            message.time = random_date()
+            message.name = sender_name(message.spam)
+        print(data, flush=True)
         return data

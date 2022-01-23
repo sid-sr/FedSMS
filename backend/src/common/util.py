@@ -8,7 +8,7 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 import tensorflow.compat.v1 as tf
 import tensorflowjs as tfjs
-from random import random, randrange
+import random
 from datetime import datetime, date, timedelta
 import string
 import names
@@ -133,7 +133,7 @@ def random_date():  # generates a random time from the last 10 days
     end = datetime.now()
     delta = end - start
     int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
-    random_second = randrange(int_delta)
+    random_second = random.randrange(int_delta)
     new_date = start + timedelta(seconds=random_second)
     epoch = datetime.utcfromtimestamp(0)
     time_milli = (new_date - epoch).total_seconds() * 1000.0
