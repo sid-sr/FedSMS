@@ -19,10 +19,9 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Welcome to Fed SMS
-        </p>
+        <p>Welcome to Fed SMS</p>
         <p>The API returned a value of &quot;{apiValue}&quot;.</p>
+        <a href="/home">Go to home</a>
         <a href="/settings">Go to settings</a>
       </header>
     </div>
