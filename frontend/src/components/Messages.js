@@ -1,33 +1,12 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable indent */
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { useState, useEffect } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import '../styles/display.css';
+import '../styles/messages.css';
 
-function Display() {
-  const [fetchMessage, setFetchMessage] = useState({
-    message: {
-      someRandomQueryParam: [],
-    },
-  });
+const Messages = ({ title = 'Messages', messages = [] }) => {
   let navigate = useNavigate();
-  const getMessage = () => {
-    axios
-      .get('/api/message')
-      .then((response) => {
-        toast.success('Messages Fetched');
-        setFetchMessage(response.data);
-        // console.log(response.data);
-      })
-      .catch((err) => {
-        toast.error('Error Retrieving Messages!');
-        console.error(err.toString());
-      });
-  };
   const diplayMessage = (mes) => {
     navigate('/message', {
       state: {
@@ -37,21 +16,17 @@ function Display() {
     });
   };
 
-  useEffect(() => {
-    getMessage();
-  }, []);
-
   return (
     <div className="container">
       <a href="/home" className="backText">
         <IoIosArrowBack style={{ marginBottom: '2px' }}></IoIosArrowBack>
         <span>Back</span>
       </a>
-      <h1 className="settingsHeading">Messages</h1>
+      <h1 className="settingsHeading">{title}</h1>
       <hr className="divider" />
       <div className="homeCard">
-        {fetchMessage
-          ? Object.values(fetchMessage).map((mes, index) => {
+        {messages
+          ? Object.values(messages).map((mes, index) => {
               const short = (mes.message || '').substring(0, 29);
               return (
                 <div key={index} onClick={() => diplayMessage(mes)}>
@@ -80,5 +55,6 @@ function Display() {
       </div>
     </div>
   );
-}
-export default Display;
+};
+
+export default Messages;

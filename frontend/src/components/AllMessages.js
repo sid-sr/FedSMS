@@ -5,14 +5,13 @@ import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 import Messages from './Messages';
 
-const Junk = () => {
+const AllMessages = () => {
   const [fetchMessage, setFetchMessage] = useState([]);
 
   const getMessage = () => {
     axios
       .get('/api/message')
       .then((response) => {
-        // Filter messages.
         toast.success('Messages Fetched');
         setFetchMessage(response.data);
       })
@@ -26,7 +25,7 @@ const Junk = () => {
     getMessage();
   }, []);
 
-  return <Messages messages={fetchMessage} title="Junk" />;
+  return <Messages messages={fetchMessage} title="Messages" />;
 };
 
-export default Junk;
+export default AllMessages;
