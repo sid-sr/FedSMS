@@ -8,7 +8,7 @@ const Junk = () => {
     const [fetchMessage, setFetchMessage] = useState([]);
 
     async function getMessage() {
-        const messages = await db.messages.filter(({ spam }) => spam == 'True').toArray();
+        const messages = await db.messages.filter(({ spam }) => spam == true).toArray();
         setFetchMessage(messages)
     }
 
