@@ -40,8 +40,6 @@ const EachMessage = () => {
       <p>
         {' '}
         {state.spam ? (
-          ''
-        ) : (
           <>
             <RiSpam2Line style={{ fontSize: '16px' }}></RiSpam2Line>
             <span style={{ marginLeft: '10px' }}>Marked as spam.</span>
@@ -59,6 +57,8 @@ const EachMessage = () => {
               Unmark
             </button>
           </>
+        ) : (
+          ''
         )}
       </p>
       <div>
