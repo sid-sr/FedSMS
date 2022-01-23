@@ -21,16 +21,14 @@ function Home() {
 
       <br></br>
       <br></br>
-      {/* <hr className="divider" /> */}
       <div className="homeCard">
-        {/* <br /> */}
         <a href="/" className="nextMessage">
           <IoChatbubblesOutline
             size={27}
             style={{ marginBottom: '2px' }}
           ></IoChatbubblesOutline>
         </a>
-        <a href="/DisplayMessages" style={{ marginLeft: '20px' }}>
+        <a href="/allmessages" style={{ marginLeft: '20px' }}>
           <span>All Messages</span>
           <IoIosArrowForward
             style={{ marginTop: '6px', float: 'right', marginRight: '10%' }}
@@ -43,14 +41,13 @@ function Home() {
             style={{ marginBottom: '2px' }}
           ></IoTrashBinOutline>
         </a>
-        <a href="/Junk" style={{ marginLeft: '20px' }}>
+        <a href="/junk" style={{ marginLeft: '20px' }}>
           <span>Junk</span>
           <IoIosArrowForward
             style={{ marginTop: '6px', float: 'right', marginRight: '10%' }}
           ></IoIosArrowForward>
         </a>
       </div>
-
       <br />
     </div>
   );
