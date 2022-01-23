@@ -24,9 +24,16 @@ const Message = () => {
 	return (
 		<div className="container">
 			<div className="home">
-				<a href="/allmessages" className="back">
-					<IoIosArrowBack style={{ marginBottom: '2px' }}></IoIosArrowBack>
-				</a>
+				{
+					state.page == 'Junk' ?
+						<a href="/junk" className="back">
+							<IoIosArrowBack style={{ marginBottom: '2px' }}></IoIosArrowBack>
+						</a>
+						:
+						<a href="/allmessages" className="back">
+							<IoIosArrowBack style={{ marginBottom: '2px' }}></IoIosArrowBack>
+						</a>
+				}
 				<FaUserCircle
 					className="Logo"
 					size={50}
