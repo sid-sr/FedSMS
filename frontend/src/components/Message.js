@@ -1,29 +1,19 @@
 /* eslint-disable indent */
-/ eslint-disable indent/;
 import { FaUserCircle } from 'react-icons/fa';
 import { IoIosArrowBack } from 'react-icons/io';
 import { RiSpam2Line } from 'react-icons/ri';
 import { useLocation } from 'react-router-dom';
-//import { BsThreeDotsVertical } from 'react-icons/bs';
 import '../styles/message.css';
-const EachMessage = () => {
+
+const Message = () => {
   const { state } = useLocation();
 
-  let newL = '';
+  const toggleSpam = () => {};
 
-  function myFunction() {
-    if (state.spam == true) {
-      newL = 'UnMarked.';
-      return newL;
-    } else {
-      newL = 'Marked as Spam';
-      return newL;
-    }
-  }
   return (
     <div className="container">
       <div className="home">
-        <a href="/DisplayMessages" className="back">
+        <a href="/allmessages" className="back">
           <IoIosArrowBack style={{ marginBottom: '2px' }}></IoIosArrowBack>
         </a>
         <FaUserCircle
@@ -45,14 +35,12 @@ const EachMessage = () => {
             <span style={{ marginLeft: '10px' }}>Marked as spam.</span>
             <button
               style={{
-                marginLeft: '10px',
+                marginLeft: '3px',
                 color: '#007aff',
                 backgroundColor: 'black',
                 border: 'none',
               }}
-              onClick={() => {
-                myFunction();
-              }}
+              onClick={toggleSpam}
             >
               Unmark
             </button>
@@ -62,13 +50,10 @@ const EachMessage = () => {
         )}
       </p>
       <div>
-        <p className=".textCard">
-          {/* <span style={{ marginLeft: '7px' }}>{newmessage}</span> */}
-        </p>
-        {/* </div> */}
+        <p className=".textCard"></p>
       </div>
     </div>
   );
 };
 
-export default EachMessage;
+export default Message;

@@ -7,7 +7,7 @@ import Settings from './components/Settings';
 import Home from './components/Home';
 import DisplayMessages from './components/DisplayMessages';
 import Junk from './components/Junk';
-import EachMessage from './components/EachMessage';
+import Message from './components/Message';
 import './index.css';
 
 const Routing = () => {
@@ -19,9 +19,9 @@ const Routing = () => {
         <Route path="/settings" element={<Settings />} />
         <Route path="/admin" element={<AdminDash />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/displaymessages" element={<DisplayMessages />} />
+        <Route path="/allmessages" element={<DisplayMessages />} />
         <Route path="/junk" element={<Junk />} />
-        <Route path="/eachmessage" element={<EachMessage />} />
+        <Route path="/message" element={<Message />} />
       </Routes>
       {/* <Footer /> */}
     </Router>

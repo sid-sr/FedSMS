@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable indent */
-/ eslint-disable indent/;
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
@@ -29,8 +28,14 @@ function Junk() {
         console.error(err.toString());
       });
   };
+
   const diplayMessage = (mes) => {
-    navigate('/EachMessage', { state: { message: mes.message } });
+    navigate('/message', {
+      state: {
+        message: mes.message,
+        spam: mes.spam,
+      },
+    });
   };
 
   useEffect(() => {
@@ -51,8 +56,7 @@ function Junk() {
               const short = (mes.message || '').substring(0, 29);
               return (
                 <div key={index} onClick={() => diplayMessage(mes)}>
-                  {/* <br /> */}
-                  <a href="/EachMessage" className="nextMessage" key={index}>
+                  <a href="/message" className="nextMessage" key={index}>
                     <FaUserCircle
                       size={38}
                       style={{ marginBottom: '2px', color: '#D1D3D4' }}

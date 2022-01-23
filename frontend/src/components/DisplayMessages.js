@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable indent */
-/ eslint-disable indent/;
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
@@ -30,7 +29,7 @@ function Display() {
       });
   };
   const diplayMessage = (mes) => {
-    navigate('/EachMessage', {
+    navigate('/message', {
       state: {
         message: mes.message,
         spam: mes.spam,
@@ -50,12 +49,6 @@ function Display() {
       </a>
       <h1 className="settingsHeading">Messages</h1>
       <hr className="divider" />
-      {/* </div><div className="homeCard">
-        <a href="/" className="nextMessage">
-          <FaUserCircle
-            size={38}
-            style={{ marginBottom: '2px', color: '#D1D3D4' }}
-          ></FaUserCircle> */}
       <div className="homeCard">
         {fetchMessage
           ? Object.values(fetchMessage).map((mes, index) => {
@@ -76,7 +69,6 @@ function Display() {
                   >
                     {short}
                   </span>
-                  {/* <a href="/EachMessage" style={{ marginLeft: '20px' }}></a> */}
                   <div className="next">
                     <IoIosArrowForward></IoIosArrowForward>
                   </div>
