@@ -62,25 +62,24 @@ function Display() {
               const short = (mes.message || '').substring(0, 29);
               return (
                 <div key={index} onClick={() => diplayMessage(mes)}>
-                  {/* <br /> */}
-                    <FaUserCircle
-                      size={38}
-                      style={{ marginBottom: '2px', color: '#D1D3D4' }}
-                    ></FaUserCircle>
-                    <span
-                      style={{
-                        marginLeft: '15px',
-                        fontSize: '15px',
-                        color: '#7a7979',
-                        float: 'center',
-                      }}
-                    >
-                      {short}
-                    </span>
-                    {/* <a href="/EachMessage" style={{ marginLeft: '20px' }}></a> */}
-                    <div className="next">
-                      <IoIosArrowForward></IoIosArrowForward>
-                    </div>
+                  <FaUserCircle
+                    size={38}
+                    style={{ marginBottom: '2px', color: '#D1D3D4' }}
+                  ></FaUserCircle>
+                  <span
+                    style={{
+                      marginLeft: '15px',
+                      fontSize: '15px',
+                      color: '#7a7979',
+                      float: 'center',
+                    }}
+                  >
+                    {short}
+                  </span>
+                  {/* <a href="/EachMessage" style={{ marginLeft: '20px' }}></a> */}
+                  <div className="next">
+                    <IoIosArrowForward></IoIosArrowForward>
+                  </div>
                   <hr className="div2"></hr>
                 </div>
               );
