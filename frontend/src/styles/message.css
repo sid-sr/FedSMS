@@ -38,7 +38,7 @@
   padding: 10px;
   text-align: left;
 }
-p {
+.redtext {
   color: red;
   float: left;
   margin-top: -10%;

@@ -2,8 +2,8 @@
 / eslint-disable indent/;
 import { FaUserCircle } from 'react-icons/fa';
 import { IoIosArrowBack } from 'react-icons/io';
-import { useLocation } from 'react-router-dom';
 import { RiSpam2Line } from 'react-icons/ri';
+import { useLocation } from 'react-router-dom';
 //import { BsThreeDotsVertical } from 'react-icons/bs';
 import '../styles/message.css';
 const EachMessage = () => {
@@ -37,7 +37,7 @@ const EachMessage = () => {
       <div className="homeNew">
         <span>{state ? state.message : ''}</span>
       </div>
-      <p>
+      <p className="redtext">
         {' '}
         {state.spam ? (
           <>

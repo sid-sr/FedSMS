@@ -63,7 +63,6 @@ function Display() {
               return (
                 <div key={index} onClick={() => diplayMessage(mes)}>
                   {/* <br /> */}
-                  <a href="/EachMessage" className="nextMessage" key={index}>
                     <FaUserCircle
                       size={38}
                       style={{ marginBottom: '2px', color: '#D1D3D4' }}
@@ -82,7 +81,6 @@ function Display() {
                     <div className="next">
                       <IoIosArrowForward></IoIosArrowForward>
                     </div>
-                  </a>
                   <hr className="div2"></hr>
                 </div>
               );
