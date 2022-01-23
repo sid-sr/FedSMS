@@ -3,6 +3,9 @@
 
 from .avg import FedAvg, QFedAvg
 from common.util import upload_model_tfjs
+import numpy as np
+from common.util import download_files_s3
+import os
 
 
 class FederatedClient():
@@ -32,8 +35,9 @@ class FederatedServer():
         self.model = self.avg_scheme.average(self.clients, self.model)
 
     def eval_global_model(self, test_data, test_labels):
-        return (self.model.predict(test_data).argmax(axis=1) == test_labels).mean(), \
-            self.model.evaluate(test_data, test_labels)
+        self.model.compile(optimizer='adam', loss='binary_crossentropy')
+        return ((self.model.predict(test_data) > 0.5).ravel() == test_labels).mean(), \
+            self.model.evaluate(test_data, test_labels, verbose=False)
 
 
 class FedDriver():
@@ -68,11 +72,27 @@ class FedDriver():
                            self.config['qfedAvg_q'],
                            self.config['qfedAvg_l'])
 
+    def get_global_test_data(self, path):
+        TEST_DATA_BUCKET = os.environ.get('TEST_DATA_BUCKET', '')
+
+        download_files_s3(f'{TEST_DATA_BUCKET}/global/', path, 'datasplits')
+        with open(path + 'test_dataset.npy', 'rb') as f:
+            test_data = np.load(f)
+        with open(path + 'test_labels.npy', 'rb') as f:
+            test_labels = np.load(f)
+
+        os.remove(path + f"{TEST_DATA_BUCKET}/global/test_dataset.npy")
+        os.remove(path + f"{TEST_DATA_BUCKET}/global/test_labels.npy")
+
+        return test_data, test_labels
+
     def get_round_stats(self):
+        path = './src/data/'
+        test_data, test_labels = self.get_global_test_data(path)
 
         # get test data.
-        # ga, gl = self.server.eval_global_model(test_data, test_labels)
-        ga, gl = 95.42, 0.46
+        ga, gl = self.server.eval_global_model(test_data, test_labels)
+
         acl = sum([client.loss for client in self.server.clients]) / \
             len(self.server.clients)
 
@@ -80,7 +100,7 @@ class FedDriver():
             len(self.server.clients)
 
         return {
-            'globalAcc': ga,
+            'globalAcc': ga * 100,
             'globalLoss': gl,
             'averageClientAcc': aca,
             'averageClientLoss': acl

@@ -5,6 +5,7 @@ import json
 import ast
 from decimal import Decimal
 from boto3.dynamodb.conditions import Key
+import shutil
 
 
 def incrementModelIndex():
@@ -30,11 +31,13 @@ def incrementModelIndex():
             # download all client models in that round and add it to the client obj list.
             download_files_s3(f'round_{round_no}/',
                               save_path, 'clientmodelbucket')
+
             add_model_obj(save_path + f'round_{round_no}', client_objs)
 
             # carry out aggregation
             fed_driver = FedDriver(current_config, client_objs, global_model)
             fed_driver.aggregate()
+
             round_stats = fed_driver.get_round_stats()
 
             update_exp_list = [
@@ -62,7 +65,9 @@ def incrementModelIndex():
                 },
                 ReturnValues="UPDATED_NEW"
             )
-
+            # clean up
+            shutil.rmtree(save_path + f'round_{round_no}')
+        
         else:
             # round not completed so increment only modelIndex
             response = ConfigTable.update_item(
@@ -100,6 +105,7 @@ def addClientModel(data):
         data = json.loads(json.dumps(data), parse_float=Decimal)
         response = ClientModelTable.put_item(Item=data)
     except Exception as e:
+        print(e, flush=True)
         result['status'] = 'Error'
         return result
     else:

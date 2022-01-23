@@ -8,7 +8,6 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 import tensorflow.compat.v1 as tf
 import tensorflowjs as tfjs
-tf.disable_v2_behavior()
 
 
 def get_addr(default_host='127.0.0.1', default_port='5000'):
@@ -42,7 +41,7 @@ def upload_files_s3(file_info, bucket):
 
 
 def download_files_s3(s3_folder_path, local_folder_path, bucket):
-    ''' Download all files fron a folder in an S3 bucket .
+    ''' Download all files from a folder in an S3 bucket .
     '''
     ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY', '')
     SECRET_KEY = os.environ.get('AWS_SECRET_KEY', '')
@@ -56,7 +55,8 @@ def download_files_s3(s3_folder_path, local_folder_path, bucket):
             save_path = local_folder_path + obj.key
             if not os.path.exists(os.path.dirname(save_path)):
                 os.makedirs(os.path.dirname(save_path))
-            bucket.download_file(obj.key, local_folder_path + obj.key)
+            if obj.key[-1] != '/':
+                bucket.download_file(obj.key, local_folder_path + obj.key)
         return True
 
     except FileNotFoundError:
@@ -114,9 +114,11 @@ def download_tfjs_model(bucket):
     '''Download a tf.js model from S3 and load it as a Keras model'''
     # depends on pwd in local run vs docker
     temp_folder = "./globalmodel/"
-    status = download_files_s3("", temp_folder, "fedmodelbucket")
+    status = download_files_s3("", temp_folder, bucket)
     if not status:
         return False
     model = tfjs.converters.load_keras_model(temp_folder + 'model.json')
+    # model.compile(optimizer='adam', loss='binary_crossentropy')
+    tf.reset_default_graph()
     rmtree(temp_folder)
     return model

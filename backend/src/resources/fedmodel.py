@@ -13,7 +13,7 @@ from flask import Response, request
 import tensorflow.compat.v1 as tf
 import tensorflowjs as tfjs
 import werkzeug.formparser
-tf.disable_v2_behavior()
+# tf.disable_v2_behavior()
 
 
 class ModelReceiver(object):
@@ -107,3 +107,14 @@ class FedModel(Resource):
         if(result['status'] == 'Error'):
             return Response(status=500)
         return Response(status=200)
+
+
+class NewModel(Resource):
+    '''Route to reset the global model'''
+
+    def post(self):
+        # add logic to get a model given parameters about:
+        # 1. what embedding to use
+        # 2. pretraining it on a smaller dataset
+        # 3. size of the embedding, vocabulary size etc
+        return 'Model Updated'

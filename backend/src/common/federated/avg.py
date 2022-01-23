@@ -1,5 +1,6 @@
 '''Classes for different averaging schemes'''
 import random
+from keras import backend as K
 
 
 class AvgScheme():
@@ -50,8 +51,10 @@ class FedAvg(AvgScheme):
                 importance = s_clients[cno].dataset_size / self.dataset_size
                 updated_w += importance * client_w[i]
             updated_weights.append(updated_w)
-
-        updated_model.set_weights(updated_weights)
+        try:
+            updated_model.set_weights(updated_weights)
+        except Exception as e:
+            print(e, flush=True)
         return updated_model
 
 
