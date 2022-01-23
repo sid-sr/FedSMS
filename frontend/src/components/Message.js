@@ -4,11 +4,21 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { RiSpam2Line } from 'react-icons/ri';
 import { useLocation } from 'react-router-dom';
 import '../styles/message.css';
+import db from '../utils/db';
 
 const Message = () => {
   const { state } = useLocation();
 
-  const toggleSpam = () => {};
+  console.log(state.index)
+
+  const toggleSpam = () => {
+    db.messages.update(state.index, {spam: "False"}).then(function (updated) {
+      if (updated)
+        console.log ("unmarked");
+      else
+        console.log ("couldnt unmark");
+    });
+  };
 
   return (
     <div className="container">
