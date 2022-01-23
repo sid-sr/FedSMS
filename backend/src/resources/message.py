@@ -45,7 +45,6 @@ class Message(Resource):
 
         # assign random names and times
         for message in data:
-            message.time = random_date()
-            message.name = sender_name(message.spam)
-        print(data, flush=True)
+            message['time'] = random_date()
+            message['name'] = sender_name(message['spam'])
         return data
