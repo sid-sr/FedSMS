@@ -8,6 +8,10 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 import tensorflow.compat.v1 as tf
 import tensorflowjs as tfjs
+import random
+from datetime import datetime, date, timedelta
+import string
+import names
 
 
 def get_addr(default_host='127.0.0.1', default_port='5000'):
@@ -122,3 +126,29 @@ def download_tfjs_model(bucket):
     tf.reset_default_graph()
     rmtree(temp_folder)
     return model
+
+
+def random_date():
+    '''Generates a random time from the last 10 days'''
+    start = datetime.now()-timedelta(10)
+    end = datetime.now()
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    random_second = random.randrange(int_delta)
+    new_date = start + timedelta(seconds=random_second)
+    epoch = datetime.utcfromtimestamp(0)
+    time_milli = (new_date - epoch).total_seconds() * 1000.0
+    return time_milli
+
+
+def random_char(y):
+    '''Generates random string of length y'''
+    return ''.join(random.choice(string.ascii_letters) for x in range(y))
+
+
+def sender_name(spam):
+    '''Generates a random name based on whether it is spam or no'''
+    if(spam):
+        return random_char(2).upper()+'-'+str(random.randint(100000, 999999))
+    else:
+        return names.get_full_name()

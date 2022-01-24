@@ -5,13 +5,17 @@ import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import '../styles/messages.css';
 
-const Messages = ({ title = 'Messages', messages = [] }) => {
+const Messages = ({ title, messages = [] }) => {
   let navigate = useNavigate();
-  const diplayMessage = (mes) => {
+  const diplayMessage = (mes, index) => {
     navigate('/message', {
       state: {
         message: mes.message,
         spam: mes.spam,
+        index: index,
+        page: title,
+        name: mes.name,
+        time: mes.time,
       },
     });
   };
@@ -29,7 +33,7 @@ const Messages = ({ title = 'Messages', messages = [] }) => {
           ? Object.values(messages).map((mes, index) => {
               const short = (mes.message || '').substring(0, 29);
               return (
-                <div key={index} onClick={() => diplayMessage(mes)}>
+                <div key={index} onClick={() => diplayMessage(mes, index)}>
                   <FaUserCircle
                     size={38}
                     style={{ marginBottom: '2px', color: '#D1D3D4' }}

@@ -1,21 +1,38 @@
 /* eslint-disable indent */
+import { useEffect, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoIosArrowBack } from 'react-icons/io';
 import { RiSpam2Line } from 'react-icons/ri';
 import { useLocation } from 'react-router-dom';
 import '../styles/message.css';
+import db from '../utils/db';
 
 const Message = () => {
   const { state } = useLocation();
+  const [spam, setSpam] = useState();
 
-  const toggleSpam = () => {};
+  useEffect(() => {
+    setSpam(state.spam);
+  }, []);
+
+  const toggleSpam = () => {
+    db.messages.update(state.index + 1, { spam: !spam }).then(function () {
+      setSpam(!spam);
+    });
+  };
 
   return (
     <div className="container">
       <div className="home">
-        <a href="/allmessages" className="back">
-          <IoIosArrowBack style={{ marginBottom: '2px' }}></IoIosArrowBack>
-        </a>
+        {state.page == 'Junk' ? (
+          <a href="/junk" className="back">
+            <IoIosArrowBack style={{ marginBottom: '2px' }}></IoIosArrowBack>
+          </a>
+        ) : (
+          <a href="/allmessages" className="back">
+            <IoIosArrowBack style={{ marginBottom: '2px' }}></IoIosArrowBack>
+          </a>
+        )}
         <FaUserCircle
           className="Logo"
           size={50}
@@ -29,7 +46,7 @@ const Message = () => {
       </div>
       <p className="redtext">
         {' '}
-        {state.spam ? (
+        {spam ? (
           <>
             <RiSpam2Line style={{ fontSize: '16px' }}></RiSpam2Line>
             <span style={{ marginLeft: '10px' }}>Marked as spam.</span>
@@ -46,7 +63,20 @@ const Message = () => {
             </button>
           </>
         ) : (
-          ''
+          <>
+            <button
+              style={{
+                marginLeft: '3px',
+                color: 'red',
+                backgroundColor: 'black',
+                border: 'none',
+              }}
+              onClick={toggleSpam}
+            >
+              <RiSpam2Line style={{ fontSize: '16px' }}></RiSpam2Line>&nbsp;
+              Mark as spam
+            </button>
+          </>
         )}
       </p>
       <div>
