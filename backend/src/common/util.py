@@ -128,7 +128,8 @@ def download_tfjs_model(bucket):
     return model
 
 
-def random_date():  # generates a random time from the last 10 days
+def random_date():
+    '''Generates a random time from the last 10 days'''
     start = datetime.now()-timedelta(10)
     end = datetime.now()
     delta = end - start
@@ -140,11 +141,13 @@ def random_date():  # generates a random time from the last 10 days
     return time_milli
 
 
-def random_char(y):  # generates random string of length y
+def random_char(y):
+    '''Generates random string of length y'''
     return ''.join(random.choice(string.ascii_letters) for x in range(y))
 
 
-def sender_name(spam):  # generates a random name based on whether it is spam or not
+def sender_name(spam):
+    '''Generates a random name based on whether it is spam or no'''
     if(spam):
         return random_char(2).upper()+'-'+str(random.randint(100000, 999999))
     else:

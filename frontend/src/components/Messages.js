@@ -7,7 +7,7 @@ import '../styles/messages.css';
 
 const Messages = ({ title, messages = [] }) => {
   let navigate = useNavigate();
-  const diplayMessage = (mes,index) => {
+  const diplayMessage = (mes, index) => {
     navigate('/message', {
       state: {
         message: mes.message,
@@ -15,7 +15,7 @@ const Messages = ({ title, messages = [] }) => {
         index: index,
         page: title,
         name: mes.name,
-        time: mes.time
+        time: mes.time,
       },
     });
   };
@@ -33,7 +33,7 @@ const Messages = ({ title, messages = [] }) => {
           ? Object.values(messages).map((mes, index) => {
               const short = (mes.message || '').substring(0, 29);
               return (
-                <div key={index} onClick={() => diplayMessage(mes,index)}>
+                <div key={index} onClick={() => diplayMessage(mes, index)}>
                   <FaUserCircle
                     size={38}
                     style={{ marginBottom: '2px', color: '#D1D3D4' }}

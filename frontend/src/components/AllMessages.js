@@ -5,18 +5,18 @@ import db from '../utils/db';
 import Messages from './Messages';
 
 const AllMessages = () => {
-	const [fetchMessage, setFetchMessage] = useState([]);
+  const [fetchMessage, setFetchMessage] = useState([]);
 
-	async function getMessage() {
-		const messages = await db.messages.toArray();
-		setFetchMessage(messages)
-	}
+  async function getMessage() {
+    const messages = await db.messages.toArray();
+    setFetchMessage(messages);
+  }
 
-	useEffect(() => {
-		getMessage();
-	}, []);
+  useEffect(() => {
+    getMessage();
+  }, []);
 
-	return <Messages messages={fetchMessage} title="Messages" />;
+  return <Messages messages={fetchMessage} title="Messages" />;
 };
 
 export default AllMessages;
