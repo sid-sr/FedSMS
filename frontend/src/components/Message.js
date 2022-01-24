@@ -1,9 +1,13 @@
 /* eslint-disable indent */
 import { useEffect, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
-import { IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { RiSpam2Line } from 'react-icons/ri';
 import { useLocation } from 'react-router-dom';
+import { BsFillArrowUpCircleFill } from 'react-icons/bs';
+// import TextField from '@mui/material/TextField';
+// import Box from '@mui/material/Box';
+//import TextField from '@material-ui/core/TextField';
 import '../styles/message.css';
 import db from '../utils/db';
 
@@ -21,6 +25,12 @@ const Message = () => {
     });
   };
 
+  // const getTime=()=>
+  // {
+  //   var milliseconds=state ? state.time : '';
+  //   var day=new Date(milliseconds);
+
+  // }
   return (
     <div className="container">
       <div className="home">
@@ -38,12 +48,39 @@ const Message = () => {
           size={50}
           style={{ marginBottom: '2px', color: '#D1D3D4' }}
         ></FaUserCircle>
+        <span
+          style={{
+            marginTop: '5px',
+            float: 'left',
+            marginLeft: '33%',
+            fontSize: '13px',
+          }}
+        >
+          {state ? state.name : ''}
+          <IoIosArrowForward style={{ color: '#D1D3D4' }}></IoIosArrowForward>
+        </span>
       </div>
       <br></br>
       <br></br>
+      <span></span>
       <div className="homeNew">
         <span>{state ? state.message : ''}</span>
       </div>
+      {/* <Box
+        component="form"
+        sx={{
+          '& > :not(style)': { m: 1, width: '25ch' },
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <TextField
+          id="outlined-basic"
+          label="Outlined"
+          variant="outlined"
+          style={{ color: 'white' }}
+        />
+      </Box> */}
       <p className="redtext">
         {' '}
         {spam ? (
@@ -81,6 +118,19 @@ const Message = () => {
       </p>
       <div>
         <p className=".textCard"></p>
+      </div>
+      <div className="OuterTextField">
+        <div className="TextField">
+          <BsFillArrowUpCircleFill
+            size={30}
+            style={{
+              color: 'green',
+              float: 'right',
+              marginTop: '-15px',
+              marginRight: '-10px',
+            }}
+          ></BsFillArrowUpCircleFill>
+        </div>
       </div>
     </div>
   );

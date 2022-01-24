@@ -9,6 +9,9 @@ const AllMessages = () => {
 
   async function getMessage() {
     const messages = await db.messages.toArray();
+    messages.sort(function (a, b) {
+      return b.time - a.time;
+    });
     setFetchMessage(messages);
   }
 
