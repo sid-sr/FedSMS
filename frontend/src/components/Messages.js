@@ -28,7 +28,7 @@ const Messages = ({ title, messages = [] }) => {
       </a>
       <h1 className="settingsHeading">{title}</h1>
       <hr className="divider" />
-      <div className="homeCard">
+      <div className="homeCards">
         <hr className="div4"></hr>
         {messages
           ? Object.values(messages).map((mes, index) => {
@@ -42,7 +42,18 @@ const Messages = ({ title, messages = [] }) => {
               var shortDay;
               var date = new Date(mes.time);
               var time = date.toLocaleTimeString().split(':');
-              var newTime = time[0] + ':' + time[1];
+              var newTime;
+              if (time[0] > 12) {
+                time[0] = time[0] - 12;
+                newTime = time[0] + ':' + time[1];
+                newTime = newTime.concat(' PM');
+              } else if (time[0] == 12) {
+                newTime = time[0] + ':' + time[1];
+                newTime = newTime.concat(' PM');
+              } else {
+                newTime = time[0] + ':' + time[1];
+                newTime = newTime.concat(' AM');
+              }
               var day = date.toUTCString().split(' ');
               if (day[2] == 'Jan') {
                 shortDay = '01';
@@ -63,11 +74,7 @@ const Messages = ({ title, messages = [] }) => {
               var combinedate =
                 newdate[2] + '/' + newdate[1] + '/' + newdate[3];
               if (getDay == today) {
-                if (time[0] <= 11) {
-                  getTime = newTime.concat(' AM');
-                } else {
-                  getTime = newTime.concat(' PM');
-                }
+                getTime = newTime;
               } else if (daywithoutnumber == combinedate) {
                 getTime = getTime.concat('Yesterday');
               } else {
@@ -112,15 +119,19 @@ const Messages = ({ title, messages = [] }) => {
                       color: '#7a7979',
                     }}
                   >
-                    <IoIosArrowForward></IoIosArrowForward>
+                    <IoIosArrowForward
+                      style={{
+                        float: 'right',
+                        marginRight: '8px',
+                        marginTop: '6px',
+                      }}
+                    ></IoIosArrowForward>
                   </span>
                   <hr className="div3"></hr>
                   <div className="newHome">
                     <span
                       style={{
-                        //marginLeft: '58px',
                         fontSize: '12px',
-                        //height: '-20px',
                         color: '#7a7979',
                         lineHeight: '9pt',
                       }}

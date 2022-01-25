@@ -2,12 +2,11 @@
 import { useEffect, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { RiSpam2Line } from 'react-icons/ri';
+import { AiFillCamera } from 'react-icons/ai';
+import { RiSpam2Line, RiAppStoreFill } from 'react-icons/ri';
 import { useLocation } from 'react-router-dom';
 import { BsFillArrowUpCircleFill } from 'react-icons/bs';
-// import TextField from '@mui/material/TextField';
-// import Box from '@mui/material/Box';
-//import TextField from '@material-ui/core/TextField';
+import TextField from '@mui/material/TextField';
 import '../styles/message.css';
 import db from '../utils/db';
 
@@ -25,12 +24,40 @@ const Message = () => {
     });
   };
 
-  // const getTime=()=>
-  // {
-  //   var milliseconds=state ? state.time : '';
-  //   var day=new Date(milliseconds);
+  const getTime = () => {
+    var milliseconds = state ? state.time : '';
+    var day = new Date(milliseconds);
+    var getDay = day.toUTCString().split(' ');
+    var time = day.toLocaleTimeString().split(':');
+    var today = new Date().toLocaleDateString();
+    var date = day.toLocaleDateString();
+    var tm = '';
+    var yest = new Date(Date.now() - 864e5);
+    yest = yest.toDateString().split(' ');
+    var combinedate = yest[2] + '/' + yest[1] + '/' + yest[3];
+    var newGetDay = getDay[1] + '/' + getDay[2] + '/' + getDay[3];
+    var newTime;
+    if (time[0] > 12) {
+      time[0] = time[0] - 12;
+      newTime = time[0] + ':' + time[1];
+      newTime = newTime.concat(' PM');
+    } else if (time[0] == 12) {
+      newTime = time[0] + ':' + time[1];
+      newTime = newTime.concat(' PM');
+    } else if (time[0] < 12) {
+      newTime = time[0] + ':' + time[1];
+      newTime = newTime.concat(' AM');
+    }
+    if (today == date) {
+      tm = tm.concat('Today, ', newTime);
+    } else if (combinedate == newGetDay) {
+      tm = tm.concat('Yesterday, ', newTime);
+    } else {
+      tm = getDay[0] + ' ' + getDay[1] + ' ' + getDay[2] + ',' + ' ' + newTime;
+    }
 
-  // }
+    return tm;
+  };
   return (
     <div className="container">
       <div className="home">
@@ -49,38 +76,45 @@ const Message = () => {
           style={{ marginBottom: '2px', color: '#D1D3D4' }}
         ></FaUserCircle>
         <span
+          className="Name"
           style={{
             marginTop: '5px',
-            float: 'left',
-            marginLeft: '33%',
-            fontSize: '13px',
+            fontSize: '12.5px',
           }}
         >
           {state ? state.name : ''}
-          <IoIosArrowForward style={{ color: '#D1D3D4' }}></IoIosArrowForward>
+          <IoIosArrowForward
+            style={{ color: '#D1D3D4', marginLeft: '2px' }}
+          ></IoIosArrowForward>
         </span>
       </div>
       <br></br>
-      <br></br>
-      <span></span>
+      <div style={{ textAlign: 'center', fontSize: '0' }}>
+        <span
+          style={{
+            color: '#7a7979',
+            fontSize: '10px',
+            display: 'inline-block',
+            marginBottom: '-1px',
+            marginTop: '-10px',
+          }}
+        >
+          Text Message
+        </span>
+      </div>
+      <div style={{ textAlign: 'center', fontSize: '0' }}>
+        <span
+          style={{
+            color: '#7a7979',
+            fontSize: '10px',
+          }}
+        >
+          {getTime()}
+        </span>
+      </div>
       <div className="homeNew">
         <span>{state ? state.message : ''}</span>
       </div>
-      {/* <Box
-        component="form"
-        sx={{
-          '& > :not(style)': { m: 1, width: '25ch' },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          id="outlined-basic"
-          label="Outlined"
-          variant="outlined"
-          style={{ color: 'white' }}
-        />
-      </Box> */}
       <p className="redtext">
         {' '}
         {spam ? (
@@ -116,22 +150,52 @@ const Message = () => {
           </>
         )}
       </p>
+      <TextField
+        id="outlined-basic"
+        label="Outlined"
+        variant="outlined"
+        style={{ color: 'blue' }}
+      />
       <div>
         <p className=".textCard"></p>
       </div>
-      <div className="OuterTextField">
-        <div className="TextField">
-          <BsFillArrowUpCircleFill
-            size={30}
-            style={{
-              color: 'green',
-              float: 'right',
-              marginTop: '-15px',
-              marginRight: '-10px',
-            }}
-          ></BsFillArrowUpCircleFill>
-        </div>
+      <AiFillCamera
+        size={35}
+        style={{ position: 'absolute', bottom: '15', color: '#7a7979' }}
+      ></AiFillCamera>
+      <RiAppStoreFill
+        size={35}
+        style={{
+          position: 'absolute',
+          bottom: '15',
+          color: '#7a7979',
+          marginLeft: '50px',
+        }}
+      ></RiAppStoreFill>
+
+      <div className="getText">
+        <input
+          type="text"
+          style={{
+            width: '210px',
+            borderRadius: '1.5em',
+            height: '40px',
+            backgroundColor: 'black',
+            borderColor: '#7a7979',
+          }}
+          placeholder="  Text Message"
+        ></input>
       </div>
+      <BsFillArrowUpCircleFill
+        size={30}
+        style={{
+          color: 'green',
+          float: 'right',
+          marginLeft: '84%',
+          position: 'absolute',
+          bottom: '15px',
+        }}
+      ></BsFillArrowUpCircleFill>
     </div>
   );
 };

@@ -18,9 +18,10 @@
   background-color: #222121;
   border-radius: 20px;
   margin-left: auto;
-  margin-right: 100px;
-  margin-bottom: 60px;
-  padding: 20px;
+  margin-top: 11px;
+  margin-right: 120px;
+  margin-bottom: 30px;
+  padding: 15px;
   text-align: left;
 }
 .textCard {
@@ -57,19 +58,31 @@
   margin-left: 1%;
   margin-top: -5%;
 }
+.getText {
+  position: absolute;
+  bottom: 11px;
+  margin-left: 100px;
+}
 .back {
   float: left;
-  margin-top: -25px;
-  margin-left: -10%;
-  text-align: left;
+  margin-top: -5px;
+  float: left;
+  margin-left: -50px;
   text-decoration: none;
   color: #007aff;
-  font-size: 25px;
+  font-size: 23px;
 }
 .Logo {
-  margin-top: -25px;
-  float: left;
-  margin-left: 40%;
+  display: block;
+  margin: auto;
+  margin-top: -10px;
+}
+.Name {
+  text-align: center;
+  display: block;
+  margin: auto;
+  margin-bottom: -60px;
+  margin-left: 13px;
 }
 .newLogo {
   margin-top: -10px;
