@@ -19,6 +19,30 @@ const Messages = ({ title, messages = [] }) => {
       },
     });
   };
+
+  const getTime = (givenTime) => {
+    const date = new Date(givenTime);
+    const today = new Date();
+    const DAY = 24 * 3600 * 1000;
+
+    const padding = (num) => ('0' + num).slice(-2);
+    const diff = today.getTime() - givenTime;
+    let displayTime = '';
+
+    if (diff < DAY) {
+      displayTime = `${padding(date.getHours() % 12)}:${padding(
+        date.getMinutes()
+      )} ${date.getHours() < 12 ? ' AM' : ' PM'}`;
+    } else if (diff < 2 * DAY) {
+      displayTime = 'Yesterday';
+    } else {
+      displayTime = `${padding(date.getDate())}/${padding(
+        date.getMonth() + 1
+      )}/${date.getFullYear() % 100}`;
+    }
+    return displayTime;
+  };
+
   let newShort;
   return (
     <div className="container">
@@ -38,48 +62,7 @@ const Messages = ({ title, messages = [] }) => {
               } else {
                 newShort = mes.message;
               }
-              var getTime = '';
-              var shortDay;
-              var date = new Date(mes.time);
-              var time = date.toLocaleTimeString().split(':');
-              var newTime;
-              if (time[0] > 12) {
-                time[0] = time[0] - 12;
-                newTime = time[0] + ':' + time[1];
-                newTime = newTime.concat(' PM');
-              } else if (time[0] == 12) {
-                newTime = time[0] + ':' + time[1];
-                newTime = newTime.concat(' PM');
-              } else {
-                newTime = time[0] + ':' + time[1];
-                newTime = newTime.concat(' AM');
-              }
-              var day = date.toUTCString().split(' ');
-              if (day[2] == 'Jan') {
-                shortDay = '01';
-              } else if (day[2] == 'Feb') {
-                shortDay = '02';
-              } else if (day[2] == 'Mar') {
-                shortDay = '03';
-              }
-              var getDay = day[1] + '/' + shortDay + '/' + day[3];
-              var newGetDay =
-                day[1] + '/' + shortDay + '/' + day[3].substring(2, 4);
-              var daywithoutnumber = day[1] + '/' + day[2] + '/' + day[3];
-              var today = new Date().toLocaleDateString();
-              var dateobj = new Date();
-              dateobj.setDate(dateobj.getDate() - 1);
-              var newdate = new Date(Date.now() - 864e5);
-              newdate = newdate.toDateString().split(' ');
-              var combinedate =
-                newdate[2] + '/' + newdate[1] + '/' + newdate[3];
-              if (getDay == today) {
-                getTime = newTime;
-              } else if (daywithoutnumber == combinedate) {
-                getTime = getTime.concat('Yesterday');
-              } else {
-                getTime = newGetDay;
-              }
+              const time = getTime(mes.time);
               return (
                 <div
                   key={index}
@@ -109,7 +92,7 @@ const Messages = ({ title, messages = [] }) => {
                       color: '#7a7979',
                     }}
                   >
-                    {getTime}
+                    {time}
                   </span>
                   <span
                     style={{
