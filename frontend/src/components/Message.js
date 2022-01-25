@@ -24,40 +24,31 @@ const Message = () => {
     });
   };
 
-  const getTime = () => {
-    var milliseconds = state ? state.time : '';
-    var day = new Date(milliseconds);
-    var getDay = day.toUTCString().split(' ');
-    var time = day.toLocaleTimeString().split(':');
-    var today = new Date().toLocaleDateString();
-    var date = day.toLocaleDateString();
-    var tm = '';
-    var yest = new Date(Date.now() - 864e5);
-    yest = yest.toDateString().split(' ');
-    var combinedate = yest[2] + '/' + yest[1] + '/' + yest[3];
-    var newGetDay = getDay[1] + '/' + getDay[2] + '/' + getDay[3];
-    var newTime;
-    if (time[0] > 12) {
-      time[0] = time[0] - 12;
-      newTime = time[0] + ':' + time[1];
-      newTime = newTime.concat(' PM');
-    } else if (time[0] == 12) {
-      newTime = time[0] + ':' + time[1];
-      newTime = newTime.concat(' PM');
-    } else if (time[0] < 12) {
-      newTime = time[0] + ':' + time[1];
-      newTime = newTime.concat(' AM');
-    }
-    if (today == date) {
-      tm = tm.concat('Today, ', newTime);
-    } else if (combinedate == newGetDay) {
-      tm = tm.concat('Yesterday, ', newTime);
-    } else {
-      tm = getDay[0] + ' ' + getDay[1] + ' ' + getDay[2] + ',' + ' ' + newTime;
-    }
+  const getTime = (givenTime) => {
+    const date = new Date(givenTime);
+    const today = new Date();
 
-    return tm;
+    const diff = today.getTime() - givenTime;
+    const DAY = 24 * 3600 * 1000;
+    let displayTime = '';
+
+    const padding = (num) => ('0' + num).slice(-2);
+    const time = `${padding(date.getHours() % 12)}:${padding(
+      date.getMinutes()
+    )} ${date.getHours() < 12 ? ' AM' : ' PM'}`;
+
+    if (diff < DAY) {
+      displayTime = `Today, ${time}`;
+    } else if (diff < 2 * DAY) {
+      displayTime = `Yesterday, ${time}`;
+    } else {
+      displayTime = `${padding(date.getDate())}/${padding(
+        date.getMonth() + 1
+      )}/${date.getFullYear() % 100}, ${time}`;
+    }
+    return displayTime;
   };
+
   return (
     <div className="container">
       <div className="home">
@@ -109,7 +100,7 @@ const Message = () => {
             fontSize: '10px',
           }}
         >
-          {getTime()}
+          {getTime(state.time)}
         </span>
       </div>
       <div className="homeNew">
