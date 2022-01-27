@@ -150,9 +150,9 @@ function Settings() {
       <h3 className="cardHeading">Manual Tests</h3>
       <div className="settingsCard">
         <Form>
-          <Form.Group className="mb-3" >
+          <Form.Group className="mb-3 inputLabel" >
             <Form.Label >Learning Rate</Form.Label>
-            <Form.Control type="number" onChange={(e) => { setTrainParams({ ...trainParams, learningRate: e.target.value }); }} placeholder="Enter Learning Rate" value={trainParams.learningRate} />
+            <Form.Control className="inputBox" type="number" onChange={(e) => { setTrainParams({ ...trainParams, learningRate: e.target.value }); }} placeholder="Enter Learning Rate" value={trainParams.learningRate} min="0" max="1" step="0.01" />
           </Form.Group>
           <button className="cardAction" onClick={loadModel}>
             <RiFileDownloadLine className="settingsIcon" />
@@ -167,13 +167,13 @@ function Settings() {
         <br />
         <hr className="divider2" />
         <Form>
-          <Form.Group className="mb-3" >
-            <Form.Label>Epochs</Form.Label>
-            <Form.Control type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, epochs: e.target.value }); }} value={trainParams.epochs} />
+          <Form.Group className="mb-3 inputLabel" >
+            <Form.Label >Epochs</Form.Label>
+            <Form.Control className="inputBox" type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, epochs: e.target.value }); }} value={trainParams.epochs} min="1" max="100" />
           </Form.Group>
-          <Form.Group className="mb-3" >
+          <Form.Group className="mb-3 inputLabel" >
             <Form.Label>Sample Size</Form.Label>
-            <Form.Control type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} />
+            <Form.Control className="inputBox" type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" max="64" />
           </Form.Group>
           <button className="cardAction" onClick={train}>
             <VscGear className="settingsIcon" />
