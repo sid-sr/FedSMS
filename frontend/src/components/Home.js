@@ -1,5 +1,5 @@
-import { IoIosArrowForward } from 'react-icons/io';
 import { AiTwotoneSetting } from 'react-icons/ai';
+import { IoIosArrowForward } from 'react-icons/io';
 import { IoChatbubblesOutline, IoTrashBinOutline } from 'react-icons/io5';
 import '../styles/home.css';
 
@@ -34,7 +34,7 @@ function Home() {
             style={{ marginTop: '6px', float: 'right', marginRight: '10%' }}
           ></IoIosArrowForward>
         </a>
-        <hr className="divider2" />
+        <hr className="divider3" />
         <a href="/" className="nextMessage">
           <IoTrashBinOutline
             size={25}
