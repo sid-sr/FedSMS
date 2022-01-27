@@ -6,9 +6,13 @@ import { CgTrashEmpty } from 'react-icons/cg';
 import {
   FaArrowLeft,
   FaCheckCircle,
-  FaExclamationCircle
+  FaExclamationCircle,
 } from 'react-icons/fa';
-import { RiChatDownloadLine, RiFileDownloadLine, RiFileUploadLine } from 'react-icons/ri';
+import {
+  RiChatDownloadLine,
+  RiFileDownloadLine,
+  RiFileUploadLine,
+} from 'react-icons/ri';
 import { VscGear } from 'react-icons/vsc';
 import ClipLoader from 'react-spinners/ClipLoader';
 import PulseLoader from 'react-spinners/PulseLoader';
@@ -41,17 +45,18 @@ function Settings() {
     spamPercent: 0,
   });
 
-
   useEffect(async () => {
     setEpochStats({ ...epochStats, trainSetSize: await db.messages.count() });
   }, []);
-
 
   async function loadModel(event) {
     event.preventDefault();
     if (trainParams.learningRate != '') {
       setFetchModelText('Fetching');
-      const model = await loadModelFromURL('/api/download/model.json', trainParams.learningRate);
+      const model = await loadModelFromURL(
+        '/api/download/model.json',
+        trainParams.learningRate
+      );
       setModel(model);
       setFetchModelText('Fetched');
     }
@@ -144,7 +149,8 @@ function Settings() {
           className="cardAction"
           style={{ marginTop: '5px' }}
           onClick={fetching}
-        ><RiChatDownloadLine className="settingsIcon" />
+        >
+          <RiChatDownloadLine className="settingsIcon" />
           {fetchText}&nbsp;
           {fetchText == 'Fetching' ? (
             <ClipLoader size={10} color={'white'} />
@@ -154,10 +160,27 @@ function Settings() {
       <h3 className="cardHeading">Manual Tests</h3>
       <div className="settingsCard">
         <form onSubmit={loadModel}>
-          <Form.Group as={Row} className="mb-3 inputLabel" >
-            <Form.Label column xs={5}>Learning Rate</Form.Label>
+          <Form.Group as={Row} className="mb-3 inputLabel">
+            <Form.Label column xs={5}>
+              Learning Rate
+            </Form.Label>
             <Col xs={7}>
-              <Form.Control required className="inputBox" type="number" onChange={(e) => { setTrainParams({ ...trainParams, learningRate: e.target.value }); }} placeholder="Enter Learning Rate" value={trainParams.learningRate} min="0" max="1" step="0.01" />
+              <Form.Control
+                required
+                className="inputBox"
+                type="number"
+                onChange={(e) => {
+                  setTrainParams({
+                    ...trainParams,
+                    learningRate: parseInt(e.target.value),
+                  });
+                }}
+                placeholder="Enter Learning Rate"
+                value={trainParams.learningRate}
+                min="0"
+                max="1"
+                step="0.01"
+              />
             </Col>
           </Form.Group>
           <button className="cardAction" type="submit">
@@ -166,26 +189,61 @@ function Settings() {
             {fetchModelText == 'Fetching' ? (
               <PulseLoader size={5} color={'white'} />
             ) : null}
-            {fetchModelText == 'Fetched' ? <FaCheckCircle></FaCheckCircle> : null}
+            {fetchModelText == 'Fetched' ? (
+              <FaCheckCircle></FaCheckCircle>
+            ) : null}
           </button>
         </form>
 
         <br />
         <hr className="divider2" />
         <form onSubmit={train}>
-          <Form.Group as={Row} className="mb-3 inputLabel" >
-            <Form.Label column xs={5}>Epochs</Form.Label>
+          <Form.Group as={Row} className="mb-3 inputLabel">
+            <Form.Label column xs={5}>
+              Epochs
+            </Form.Label>
             <Col xs={7}>
-              <Form.Control required className="inputBox" type="number" placeholder="Enter Epochs" onChange={(e) => { setTrainParams({ ...trainParams, epochs: e.target.value }); }} value={trainParams.epochs} min="1" max="100" />
+              <Form.Control
+                required
+                className="inputBox"
+                type="number"
+                placeholder="Enter Epochs"
+                onChange={(e) => {
+                  setTrainParams({
+                    ...trainParams,
+                    epochs: parseInt(e.target.value),
+                  });
+                }}
+                value={trainParams.epochs}
+                min="1"
+                max="100"
+              />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} className="mb-3 inputLabel" >
-            <Form.Label column xs={5}>Sample Size</Form.Label>
+          <Form.Group as={Row} className="mb-3 inputLabel">
+            <Form.Label column xs={5}>
+              Sample Size
+            </Form.Label>
             <Col xs={7}>
-              <Form.Control disabled={customSample ? true : false} style={{ color: customSample ? 'black' : '#bbbaba' }} required className="inputBox" type="number" placeholder="Enter Sample Size" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" />
+              <Form.Control
+                disabled={customSample ? true : false}
+                style={{ color: customSample ? 'black' : '#bbbaba' }}
+                required
+                className="inputBox"
+                type="number"
+                placeholder="Enter Sample Size"
+                onChange={(e) => {
+                  setTrainParams({
+                    ...trainParams,
+                    sampleSize: e.target.value,
+                  });
+                }}
+                value={trainParams.sampleSize}
+                min="1"
+              />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} className="mb-3 inputLabel" >
+          <Form.Group as={Row} className="mb-3 inputLabel">
             <Form.Label column xs={5}></Form.Label>
             <Col xs={7}>
               <Form>
@@ -194,7 +252,13 @@ function Settings() {
                   id="custom-switch"
                   label="All Data"
                   checked={customSample}
-                  onChange={() => { setCustomSample(!customSample); setTrainParams({ ...trainParams, sampleSize: epochStats.trainSetSize }); }}
+                  onChange={() => {
+                    setCustomSample(!customSample);
+                    setTrainParams({
+                      ...trainParams,
+                      sampleSize: epochStats.trainSetSize,
+                    });
+                  }}
                 />
               </Form>
             </Col>
@@ -206,13 +270,14 @@ function Settings() {
             {trainModelText == 'Training' ? (
               <PulseLoader size={5} color={'white'} />
             ) : null}
-            {trainModelText == 'Trained' ? <FaCheckCircle></FaCheckCircle> : null}
+            {trainModelText == 'Trained' ? (
+              <FaCheckCircle></FaCheckCircle>
+            ) : null}
             {trainModelText == 'Failed' ? (
               <FaExclamationCircle></FaExclamationCircle>
             ) : null}
           </button>
         </form>
-
       </div>
 
       <h3 className="cardHeading">Upload Model</h3>

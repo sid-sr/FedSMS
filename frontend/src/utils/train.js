@@ -1,16 +1,17 @@
 import * as tf from '@tensorflow/tfjs';
 
 function getTrainingData(messages, sampleSize) {
-  sampleSize = Math.min(messages.length, sampleSize)
+  sampleSize = Math.min(messages.length, sampleSize);
 
   //generates random sample
   var randomIndex = new Set();
   while (randomIndex.size !== sampleSize) {
     randomIndex.add(Math.floor(Math.random() * messages.length));
   }
-  randomIndex = Array.from(randomIndex)
+  randomIndex = Array.from(randomIndex);
 
-  const x_train = [], y_train = [];
+  const x_train = [],
+    y_train = [];
   for (const index in randomIndex) {
     x_train.push(messages[randomIndex[index]]['embedding']);
     y_train.push(1 * messages[randomIndex[index]]['spam']);
@@ -52,7 +53,7 @@ export const trainModel = async (
   );
 
   return {
-    numMessages: messages.length,
+    numMessages: xs.shape[0],
     trainLoss: Math.round(stats[0].dataSync()[0] * 1000) / 1000,
     trainAcc: Math.round(stats[1].dataSync()[0] * 100 * 100) / 100,
   };
