@@ -1,25 +1,31 @@
-import Slider from 'rc-slider';
+import axios from 'axios';
 import 'rc-slider/assets/index.css';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import { CgTrashEmpty } from 'react-icons/cg';
 import {
   FaArrowLeft,
   FaCheckCircle,
-  FaExclamationCircle,
+  FaExclamationCircle
 } from 'react-icons/fa';
+import { RiChatDownloadLine, RiFileDownloadLine, RiFileUploadLine } from 'react-icons/ri';
+import { VscGear } from 'react-icons/vsc';
 import ClipLoader from 'react-spinners/ClipLoader';
 import PulseLoader from 'react-spinners/PulseLoader';
 import '../styles/settings.css';
-import axios from 'axios';
 import db from '../utils/db';
-import { trainModel, loadModelFromURL, saveModel } from '../utils/train';
-
+import { loadModelFromURL, saveModel, trainModel } from '../utils/train';
 function Settings() {
   const [fetchText, setFetchText] = useState('Fetch');
   const [uploadText, setUploadText] = useState('Upload');
   const [deleteText, setDeleteText] = useState('Clear DB');
-  const [messageCount, setMessageCount] = useState(10);
   const [fetchModelText, setFetchModelText] = useState('Fetch Model');
   const [trainModelText, setTrainModelText] = useState('Train Model');
+  const [trainParams, setTrainParams] = useState({
+    sampleSize: 64,
+    learningRate: 0.01,
+    epochs: 3,
+  });
   const [trainStats, setTrainStats] = useState({
     numMessages: 30,
     trainLoss: 0.3,
@@ -34,17 +40,15 @@ function Settings() {
     spamPercent: 0,
   });
 
+
   useEffect(async () => {
     setEpochStats({ ...epochStats, trainSetSize: await db.messages.count() });
   }, []);
 
-  const onSlide = (value) => {
-    setMessageCount(value);
-  };
 
   async function loadModel() {
     setFetchModelText('Fetching');
-    const model = await loadModelFromURL('/api/download/model.json');
+    const model = await loadModelFromURL('/api/download/model.json', 0.01);
     setModel(model);
     setFetchModelText('Fetched');
   }
@@ -129,46 +133,11 @@ function Settings() {
       <hr className="divider" />
       <h3 className="cardHeading">Fetch Messages</h3>
       <div className="settingsCard">
-        <div>
-          <Slider
-            className="numberSlider"
-            handleStyle={{
-              borderColor: 'white',
-              height: 20,
-              width: 20,
-              marginTop: -9,
-              backgroundColor: 'white',
-            }}
-            min={5}
-            max={100}
-            defaultValue={10}
-            trackStyle={{ backgroundColor: '#2E4FE1', height: 4 }}
-            railStyle={{ backgroundColor: '#7a7979', height: 4 }}
-            marks={{
-              5: 5,
-              10: 10,
-              20: 20,
-              30: 30,
-              40: 40,
-              50: 50,
-              60: 60,
-              70: 70,
-              80: 80,
-              90: 90,
-              100: 100,
-            }}
-            step={null}
-            onChange={onSlide}
-            value={messageCount}
-          />
-        </div>
-        <br />
-        <hr className="divider2" />
         <button
           className="cardAction"
           style={{ marginTop: '5px' }}
           onClick={fetching}
-        >
+        ><RiChatDownloadLine className="settingsIcon" />
           {fetchText}&nbsp;
           {fetchText == 'Fetching' ? (
             <ClipLoader size={10} color={'white'} />
@@ -177,9 +146,54 @@ function Settings() {
       </div>
 
       <br />
+
+      <h3 className="cardHeading">Manual Tests</h3>
+      <div className="settingsCard">
+        <Form>
+          <Form.Group className="mb-3" >
+            <Form.Label >Learning Rate</Form.Label>
+            <Form.Control type="number" onChange={(e) => { setTrainParams({ ...trainParams, learningRate: e.target.value }); }} placeholder="Enter Learning Rate" value={trainParams.learningRate} />
+          </Form.Group>
+          <button className="cardAction" onClick={loadModel}>
+            <RiFileDownloadLine className="settingsIcon" />
+            {fetchModelText} &nbsp;
+            {fetchModelText == 'Fetching' ? (
+              <PulseLoader size={5} color={'white'} />
+            ) : null}
+            {fetchModelText == 'Fetched' ? <FaCheckCircle></FaCheckCircle> : null}
+          </button>
+        </Form>
+
+        <br />
+        <hr className="divider2" />
+        <Form>
+          <Form.Group className="mb-3" >
+            <Form.Label>Epochs</Form.Label>
+            <Form.Control type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, epochs: e.target.value }); }} value={trainParams.epochs} />
+          </Form.Group>
+          <Form.Group className="mb-3" >
+            <Form.Label>Sample Size</Form.Label>
+            <Form.Control type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} />
+          </Form.Group>
+          <button className="cardAction" onClick={train}>
+            <VscGear className="settingsIcon" />
+            {trainModelText} &nbsp;
+            {trainModelText == 'Training' ? (
+              <PulseLoader size={5} color={'white'} />
+            ) : null}
+            {trainModelText == 'Trained' ? <FaCheckCircle></FaCheckCircle> : null}
+            {trainModelText == 'Failed' ? (
+              <FaExclamationCircle></FaExclamationCircle>
+            ) : null}
+          </button>
+        </Form>
+
+      </div>
+
       <h3 className="cardHeading">Upload Model</h3>
       <div className="settingsCard">
         <button className="cardAction" onClick={uploading}>
+          <RiFileUploadLine className="settingsIcon" />
           {uploadText} &nbsp;
           {uploadText == 'Uploading' ? (
             <PulseLoader size={5} color={'white'} />
@@ -187,34 +201,14 @@ function Settings() {
           {uploadText == 'Uploaded' ? <FaCheckCircle></FaCheckCircle> : null}
         </button>
       </div>
-      <h3 className="cardHeading">Manual Tests</h3>
-      <div className="settingsCard">
-        <button className="cardAction" onClick={loadModel}>
-          {fetchModelText} &nbsp;
-          {fetchModelText == 'Fetching' ? (
-            <PulseLoader size={5} color={'white'} />
-          ) : null}
-          {fetchModelText == 'Fetched' ? <FaCheckCircle></FaCheckCircle> : null}
-        </button>
-      </div>
-      <div className="settingsCard">
-        <button className="cardAction" onClick={train}>
-          {trainModelText} &nbsp;
-          {trainModelText == 'Training' ? (
-            <PulseLoader size={5} color={'white'} />
-          ) : null}
-          {trainModelText == 'Trained' ? <FaCheckCircle></FaCheckCircle> : null}
-          {trainModelText == 'Failed' ? (
-            <FaExclamationCircle></FaExclamationCircle>
-          ) : null}
-        </button>
-      </div>
+      <h3 className="cardHeading">Reset</h3>
       <div className="settingsCard">
         <button
           className="cardAction"
           // style={{ backgroundColor: '#CB4C4E' }}
           onClick={deleteMessages}
         >
+          <CgTrashEmpty className="settingsIcon" />
           {deleteText} &nbsp;
           {deleteText == 'Clearing' ? (
             <PulseLoader size={5} color={'white'} />

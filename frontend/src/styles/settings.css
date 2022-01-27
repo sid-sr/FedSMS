@@ -85,3 +85,9 @@
   color: #007aff;
   font-size: 17px;
 }
+
+.settingsIcon {
+  margin-top: -5px;
+  margin-right: 10px;
+  font-size: 20px;
+}
