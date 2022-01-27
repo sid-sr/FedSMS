@@ -46,11 +46,14 @@ function Settings() {
   }, []);
 
 
-  async function loadModel() {
-    setFetchModelText('Fetching');
-    const model = await loadModelFromURL('/api/download/model.json', 0.01);
-    setModel(model);
-    setFetchModelText('Fetched');
+  async function loadModel(event) {
+    event.preventDefault();
+    if (trainParams.learningRate != '') {
+      setFetchModelText('Fetching');
+      const model = await loadModelFromURL('/api/download/model.json', trainParams.learningRate);
+      setModel(model);
+      setFetchModelText('Fetched');
+    }
   }
 
   async function train() {
@@ -60,8 +63,9 @@ function Settings() {
       const stats = await trainModel(
         messages,
         model,
-        3,
+        trainParams.epochs,
         32,
+        trainParams.sampleSize,
         async (epoch, logs) => {
           setEpochStats({
             ...epochStats,
@@ -144,17 +148,14 @@ function Settings() {
           ) : null}
         </button>
       </div>
-
-      <br />
-
       <h3 className="cardHeading">Manual Tests</h3>
       <div className="settingsCard">
-        <Form>
+        <form onSubmit={loadModel}>
           <Form.Group className="mb-3 inputLabel" >
             <Form.Label >Learning Rate</Form.Label>
-            <Form.Control className="inputBox" type="number" onChange={(e) => { setTrainParams({ ...trainParams, learningRate: e.target.value }); }} placeholder="Enter Learning Rate" value={trainParams.learningRate} min="0" max="1" step="0.01" />
+            <Form.Control required className="inputBox" type="number" onChange={(e) => { setTrainParams({ ...trainParams, learningRate: e.target.value }); }} placeholder="Enter Learning Rate" value={trainParams.learningRate} min="0" max="1" step="0.01" />
           </Form.Group>
-          <button className="cardAction" onClick={loadModel}>
+          <button className="cardAction" type="submit">
             <RiFileDownloadLine className="settingsIcon" />
             {fetchModelText} &nbsp;
             {fetchModelText == 'Fetching' ? (
@@ -162,20 +163,20 @@ function Settings() {
             ) : null}
             {fetchModelText == 'Fetched' ? <FaCheckCircle></FaCheckCircle> : null}
           </button>
-        </Form>
+        </form>
 
         <br />
         <hr className="divider2" />
-        <Form>
+        <form onSubmit={train}>
           <Form.Group className="mb-3 inputLabel" >
             <Form.Label >Epochs</Form.Label>
-            <Form.Control className="inputBox" type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, epochs: e.target.value }); }} value={trainParams.epochs} min="1" max="100" />
+            <Form.Control required className="inputBox" type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, epochs: e.target.value }); }} value={trainParams.epochs} min="1" max="100" />
           </Form.Group>
           <Form.Group className="mb-3 inputLabel" >
             <Form.Label>Sample Size</Form.Label>
-            <Form.Control className="inputBox" type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" max="64" />
+            <Form.Control required className="inputBox" type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" max="64" />
           </Form.Group>
-          <button className="cardAction" onClick={train}>
+          <button className="cardAction" type="submit">
             <VscGear className="settingsIcon" />
             {trainModelText} &nbsp;
             {trainModelText == 'Training' ? (
@@ -186,7 +187,7 @@ function Settings() {
               <FaExclamationCircle></FaExclamationCircle>
             ) : null}
           </button>
-        </Form>
+        </form>
 
       </div>
 

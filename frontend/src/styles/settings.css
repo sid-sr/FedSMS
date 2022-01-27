@@ -42,17 +42,17 @@
 }
 .cardHeading {
   font-family: 'Open Sans', sans-serif;
-  color: #7a7979;
+  color: #d1d0d0;
   font-size: 19px;
   font-weight: bold;
-  margin-top: 15px;
+  margin-top: 25px !important;
 }
 .divider {
-  background: gray;
+  background: rgb(221, 219, 219);
   margin-top: 25px;
 }
 .divider2 {
-  background: gray;
+  background: rgb(221, 219, 219);
   margin-top: 5px;
 }
 .alignleft {
@@ -95,6 +95,7 @@
 .inputLabel {
   text-align: left;
   color: #bbbaba;
+  font-family: 'Open Sans', sans-serif;
 }
 .inputBox,
 .inputBox:focus {
