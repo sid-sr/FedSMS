@@ -181,7 +181,7 @@ function Settings() {
           <Form.Group as={Row} className="mb-3 inputLabel" >
             <Form.Label column xs={5}>Sample Size</Form.Label>
             <Col xs={7}>
-              <Form.Control required className="inputBox" type="number" placeholder="Enter Sample Size" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" max="64" />
+              <Form.Control required className="inputBox" type="number" placeholder="Enter Sample Size" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" />
             </Col>
           </Form.Group>
           <button className="cardAction" type="submit">
