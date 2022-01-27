@@ -21,6 +21,7 @@ function Settings() {
   const [deleteText, setDeleteText] = useState('Clear DB');
   const [fetchModelText, setFetchModelText] = useState('Fetch Model');
   const [trainModelText, setTrainModelText] = useState('Train Model');
+  const [customSample, setCustomSample] = useState(false);
   const [trainParams, setTrainParams] = useState({
     sampleSize: 64,
     learningRate: 0.01,
@@ -181,9 +182,24 @@ function Settings() {
           <Form.Group as={Row} className="mb-3 inputLabel" >
             <Form.Label column xs={5}>Sample Size</Form.Label>
             <Col xs={7}>
-              <Form.Control required className="inputBox" type="number" placeholder="Enter Sample Size" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" />
+              <Form.Control disabled={customSample ? true : false} style={{ color: customSample ? 'black' : '#bbbaba' }} required className="inputBox" type="number" placeholder="Enter Sample Size" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" />
             </Col>
           </Form.Group>
+          <Form.Group as={Row} className="mb-3 inputLabel" >
+            <Form.Label column xs={5}></Form.Label>
+            <Col xs={7}>
+              <Form>
+                <Form.Check
+                  type="switch"
+                  id="custom-switch"
+                  label="All Data"
+                  checked={customSample}
+                  onChange={() => { setCustomSample(!customSample); setTrainParams({ ...trainParams, sampleSize: epochStats.trainSetSize }); }}
+                />
+              </Form>
+            </Col>
+          </Form.Group>
+
           <button className="cardAction" type="submit">
             <VscGear className="settingsIcon" />
             {trainModelText} &nbsp;
