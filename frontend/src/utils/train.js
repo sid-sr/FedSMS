@@ -2,12 +2,18 @@ import * as tf from '@tensorflow/tfjs';
 
 function getTrainingData(messages, sampleSize) {
   sampleSize = Math.min(messages.length, sampleSize)
-  var randomIndex = Array.from({ length: sampleSize }, () => Math.floor(Math.random() * sampleSize));
-  const x_train = [], y_train = [];
 
+  //generates random sample
+  var randomIndex = new Set();
+  while (randomIndex.size !== sampleSize) {
+    randomIndex.add(Math.floor(Math.random() * messages.length));
+  }
+  randomIndex = Array.from(randomIndex)
+
+  const x_train = [], y_train = [];
   for (const index in randomIndex) {
-    x_train.push(messages[index]['embedding']);
-    y_train.push(1 * messages[index]['spam']);
+    x_train.push(messages[randomIndex[index]]['embedding']);
+    y_train.push(1 * messages[randomIndex[index]]['spam']);
   }
   const xs = tf.tensor2d(x_train, [
     sampleSize,
