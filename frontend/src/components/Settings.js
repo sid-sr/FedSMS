@@ -1,7 +1,7 @@
 import axios from 'axios';
 import 'rc-slider/assets/index.css';
 import { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Col, Form, Row } from 'react-bootstrap';
 import { CgTrashEmpty } from 'react-icons/cg';
 import {
   FaArrowLeft,
@@ -56,31 +56,33 @@ function Settings() {
     }
   }
 
-  async function train() {
-    if (trainModelText == 'Train Model') {
-      setTrainModelText('Training');
-      const messages = await db.messages.toArray();
-      const stats = await trainModel(
-        messages,
-        model,
-        trainParams.epochs,
-        32,
-        trainParams.sampleSize,
-        async (epoch, logs) => {
-          setEpochStats({
-            ...epochStats,
-            epoch: epoch,
-            loss: Math.round(logs.loss * 1000) / 1000,
-          });
+  async function train(event) {
+    event.preventDefault();
+    if (trainParams.epochs != '' && trainParams.sampleSize != '')
+      if (trainModelText == 'Train Model') {
+        setTrainModelText('Training');
+        const messages = await db.messages.toArray();
+        const stats = await trainModel(
+          messages,
+          model,
+          trainParams.epochs,
+          32,
+          trainParams.sampleSize,
+          async (epoch, logs) => {
+            setEpochStats({
+              ...epochStats,
+              epoch: epoch,
+              loss: Math.round(logs.loss * 1000) / 1000,
+            });
+          }
+        );
+        if (stats) {
+          setTrainStats(stats);
+          setTrainModelText('Trained');
+        } else {
+          setTrainModelText('Failed');
         }
-      );
-      if (stats) {
-        setTrainStats(stats);
-        setTrainModelText('Trained');
-      } else {
-        setTrainModelText('Failed');
       }
-    }
   }
 
   async function fetching() {
@@ -151,9 +153,11 @@ function Settings() {
       <h3 className="cardHeading">Manual Tests</h3>
       <div className="settingsCard">
         <form onSubmit={loadModel}>
-          <Form.Group className="mb-3 inputLabel" >
-            <Form.Label >Learning Rate</Form.Label>
-            <Form.Control required className="inputBox" type="number" onChange={(e) => { setTrainParams({ ...trainParams, learningRate: e.target.value }); }} placeholder="Enter Learning Rate" value={trainParams.learningRate} min="0" max="1" step="0.01" />
+          <Form.Group as={Row} className="mb-3 inputLabel" >
+            <Form.Label column xs={5}>Learning Rate</Form.Label>
+            <Col xs={7}>
+              <Form.Control required className="inputBox" type="number" onChange={(e) => { setTrainParams({ ...trainParams, learningRate: e.target.value }); }} placeholder="Enter Learning Rate" value={trainParams.learningRate} min="0" max="1" step="0.01" />
+            </Col>
           </Form.Group>
           <button className="cardAction" type="submit">
             <RiFileDownloadLine className="settingsIcon" />
@@ -168,13 +172,17 @@ function Settings() {
         <br />
         <hr className="divider2" />
         <form onSubmit={train}>
-          <Form.Group className="mb-3 inputLabel" >
-            <Form.Label >Epochs</Form.Label>
-            <Form.Control required className="inputBox" type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, epochs: e.target.value }); }} value={trainParams.epochs} min="1" max="100" />
+          <Form.Group as={Row} className="mb-3 inputLabel" >
+            <Form.Label column xs={5}>Epochs</Form.Label>
+            <Col xs={7}>
+              <Form.Control required className="inputBox" type="number" placeholder="Enter Epochs" onChange={(e) => { setTrainParams({ ...trainParams, epochs: e.target.value }); }} value={trainParams.epochs} min="1" max="100" />
+            </Col>
           </Form.Group>
-          <Form.Group className="mb-3 inputLabel" >
-            <Form.Label>Sample Size</Form.Label>
-            <Form.Control required className="inputBox" type="number" placeholder="Enter Learning Rate" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" max="64" />
+          <Form.Group as={Row} className="mb-3 inputLabel" >
+            <Form.Label column xs={5}>Sample Size</Form.Label>
+            <Col xs={7}>
+              <Form.Control required className="inputBox" type="number" placeholder="Enter Sample Size" onChange={(e) => { setTrainParams({ ...trainParams, sampleSize: e.target.value }); }} value={trainParams.sampleSize} min="1" max="64" />
+            </Col>
           </Form.Group>
           <button className="cardAction" type="submit">
             <VscGear className="settingsIcon" />
