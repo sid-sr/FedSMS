@@ -1,16 +1,16 @@
 import * as tf from '@tensorflow/tfjs';
 
-function getTrainingData(messages) {
-  const x_train = [],
-    y_train = [];
+function getTrainingData(messages, sampleSize) {
+  sampleSize = Math.min(messages.length, sampleSize)
+  var randomIndex = Array.from({ length: sampleSize }, () => Math.floor(Math.random() * sampleSize));
+  const x_train = [], y_train = [];
 
-  for (const row of messages) {
-    x_train.push(row['embedding']);
-    y_train.push(1 * row['spam']);
+  for (const index in randomIndex) {
+    x_train.push(messages[index]['embedding']);
+    y_train.push(1 * messages[index]['spam']);
   }
-
   const xs = tf.tensor2d(x_train, [
-    messages.length,
+    sampleSize,
     messages[0]['embedding'].length,
   ]);
   const ys = tf.tensor1d(y_train);
@@ -23,11 +23,12 @@ export const trainModel = async (
   model,
   epochs,
   batchSize,
+  sampleSize,
   callback
 ) => {
   if (messages.length === 0 || !model) return;
 
-  const [xs, ys] = getTrainingData(messages);
+  const [xs, ys] = getTrainingData(messages, sampleSize);
 
   // train model
   await model.fit(xs, ys, {
@@ -51,12 +52,12 @@ export const trainModel = async (
   };
 };
 
-export const loadModelFromURL = async (url) => {
+export const loadModelFromURL = async (url, learningRate) => {
   const model = await tf.loadLayersModel(url);
   model.summary();
   model.compile({
     loss: 'binaryCrossentropy',
-    optimizer: tf.train.adam(0.01),
+    optimizer: tf.train.adam(learningRate),
     metrics: ['accuracy'],
   });
   return model;
