@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import App from './App';
 import AdminDash from './components/AdminDash';
 import Settings from './components/Settings';
 import Home from './components/Home';
@@ -15,7 +14,7 @@ const Routing = () => {
     <Router>
       {/* <Header /> */}
       <Routes>
-        <Route exact path="/" element={<App />} />
+        <Route exact path="/" element={<Home />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/admin" element={<AdminDash />} />
         <Route path="/home" element={<Home />} />
