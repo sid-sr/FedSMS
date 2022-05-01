@@ -16,6 +16,10 @@ logger = logging.getLogger('werkzeug')  # grabs underlying WSGI logger
 handler = logging.FileHandler('test.log')  # creates handler for the log file
 logger.addHandler(handler)
 
+gunicorn_error_logger = logging.getLogger('gunicorn.error')
+logger.handlers.extend(gunicorn_error_logger.handlers)
+logger.setLevel(logging.DEBUG)
+
 api = Api(app)
 api.add_resource(Hello, '/api/hello')
 api.add_resource(Message, '/api/message')
