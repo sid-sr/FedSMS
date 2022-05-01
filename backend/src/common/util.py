@@ -14,7 +14,7 @@ import string
 import names
 import logging
 
-logger = logging.getLogger('werkzeug')
+logger = logging.getLogger('gunicorn.error')
 
 
 def get_addr(default_host='127.0.0.1', default_port='5000'):

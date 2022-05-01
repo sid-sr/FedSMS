@@ -12,13 +12,11 @@ from resources.reset import Reset
 from common.util import get_addr
 
 app = Flask(__name__, static_folder='../build', static_url_path='/')
-logger = logging.getLogger('werkzeug')  # grabs underlying WSGI logger
-handler = logging.FileHandler('test.log')  # creates handler for the log file
-logger.addHandler(handler)
 
 gunicorn_error_logger = logging.getLogger('gunicorn.error')
-logger.handlers.extend(gunicorn_error_logger.handlers)
-logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler('test.log')
+gunicorn_error_logger.setLevel(logging.DEBUG)
+gunicorn_error_logger.addHandler(handler)
 
 api = Api(app)
 api.add_resource(Hello, '/api/hello')
