@@ -18,4 +18,4 @@ ENV S3_URL="https://clientmodelbucket.s3.us-east-2.amazonaws.com/"
 
 WORKDIR /usr/src/app/backend/src
 RUN python3 -m pip install gunicorn
-CMD gunicorn --log-file /app/logs/gunicorn.log --log-level DEBUG --bind $SERVER_ADDR:$PORT -w 1 app:gunicorn_app
+CMD gunicorn --log-file /usr/src/app/backend/src/gunicorn.log --log-level DEBUG --bind $SERVER_ADDR:$PORT -w 1 app:gunicorn_app
