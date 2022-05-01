@@ -1,3 +1,4 @@
+from cmath import log
 from common.util import add_model_obj, download_files_s3, download_tfjs_model
 from common.federated.util import FedDriver
 from common.dynamodb_handler import ConfigTable, ClientModelTable, DecimalEncoder
@@ -7,6 +8,9 @@ from decimal import Decimal
 import os
 from boto3.dynamodb.conditions import Key
 import shutil
+import logging
+
+logger = logging.getLogger('gunicorn.error')
 
 
 def incrementModelIndex():
@@ -21,6 +25,7 @@ def incrementModelIndex():
 
             round_no = current_config['roundsCompleted']
             global_model = download_tfjs_model('fedmodelbucket')
+            logger.info("Downloaded global model")
             save_path = '/tmp/src/data/clientmodels/'
 
             filtering_exp = Key('round').eq(round_no)
@@ -28,16 +33,18 @@ def incrementModelIndex():
                 KeyConditionExpression=filtering_exp)
             client_objs = ast.literal_eval(
                 (json.dumps(client_objs['Items'], cls=DecimalEncoder)))
-
+            logger.info("Retrieved client objs")
             # download all client models in that round and add it to the client obj list.
             download_files_s3(f'round_{round_no}/',
                               save_path, 'clientmodelbucket')
-
+            logger.info("Downloaded client models")
             add_model_obj(save_path + f'round_{round_no}', client_objs)
-
+            logger.info("Added client objs")
             # carry out aggregation
             fed_driver = FedDriver(current_config, client_objs, global_model)
+            logger.info("Created Aggregator")
             fed_driver.aggregate()
+            logger.info("Aggregated")
 
             round_stats = fed_driver.get_round_stats()
 
@@ -66,8 +73,10 @@ def incrementModelIndex():
                 },
                 ReturnValues="UPDATED_NEW"
             )
+            logger.info("Finished DDB update, removing save_path")
             # clean up
             shutil.rmtree(save_path)
+            logger.info("Creating root save path again")
             os.makedirs(save_path, exist_ok=True)
         else:
             # round not completed so increment only modelIndex

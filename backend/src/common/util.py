@@ -82,6 +82,7 @@ def download_files_s3(s3_folder_path, local_folder_path, bucket):
 def upload_model_tfjs(tf_model, bucket):
     ''' Save a Tensorflow model as a tensorflow.js model and upload it to S3
     '''
+    logger.info("upload_model_tfjs called")
     temp_folder = "model_tfjs_temp_folder"
     tfjs.converters.save_keras_model(tf_model, temp_folder)
     file_info = []
@@ -90,14 +91,17 @@ def upload_model_tfjs(tf_model, bucket):
         file_info.append((os.path.join(temp_folder, file_name), file_name))
 
     status = upload_files_s3(file_info, bucket)
+    logger.info(f"Uploaded tfjs model status: {status}")
     # clean up
     rmtree(temp_folder)
+    logger.info(f"Deleted: {temp_folder}")
     return status
 
 
 def upload_model_h5(model, bucket, roundInfo):
     ''' Save a Tensorflow model as a .h5 model file and upload it to S3
     '''
+    logger.info("upload_model_h5 called")
     file_name = 'model_' + str(roundInfo['modelIndex']) + ".h5"
     s3_folder_name = 'round_' + str(roundInfo['roundsCompleted'])
     temp_folder = "/tmp/src/data/saved_models/"
@@ -107,8 +111,10 @@ def upload_model_h5(model, bucket, roundInfo):
     file_info.append(
         (temp_folder + file_name, s3_folder_name + '/' + file_name))
     status = upload_files_s3(file_info, bucket)
+    logger.info(f"Uploaded h5 model status: {status}")
     # clean up
     rmtree(temp_folder)
+    logger.info(f"Deleted: {temp_folder}")
     if status:
         return file_info[0][1]
     else:
@@ -128,12 +134,16 @@ def download_tfjs_model(bucket):
     temp_folder = "/tmp/globalmodel/"
     logger.info("Downloading model")
     status = download_files_s3("", temp_folder, bucket)
+    logger.info("Returned from download_files_s3")
     if not status:
+        logger.error("Status is false, returning False")
         return False
     model = tfjs.converters.load_keras_model(temp_folder + 'model.json')
     # model.compile(optimizer='adam', loss='binary_crossentropy')
     tf.reset_default_graph()
+    logger.info("Attempting global temp folder delete")
     rmtree(temp_folder)
+    logger.info("Global temp folder deleted")
     return model
 
 
