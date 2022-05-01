@@ -12,6 +12,9 @@ import random
 from datetime import datetime, date, timedelta
 import string
 import names
+import logging
+
+logger = logging.getLogger('werkzeug')
 
 
 def get_addr(default_host='127.0.0.1', default_port='5000'):
@@ -47,6 +50,8 @@ def upload_files_s3(file_info, bucket):
 def download_files_s3(s3_folder_path, local_folder_path, bucket):
     ''' Download all files from a folder in an S3 bucket .
     '''
+    logger.info(
+        f"Download file called with {s3_folder_path} {local_folder_path} {bucket}")
     ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY', '')
     SECRET_KEY = os.environ.get('AWS_SECRET_KEY', '')
 
@@ -58,16 +63,19 @@ def download_files_s3(s3_folder_path, local_folder_path, bucket):
         for obj in bucket.objects.filter(Prefix=s3_folder_path):
             save_path = local_folder_path + obj.key
             if not os.path.exists(os.path.dirname(save_path)):
+                logger.info(f"Created folder {os.path.dirname(save_path)}")
                 os.makedirs(os.path.dirname(save_path))
             if obj.key[-1] != '/':
+                logger.info(
+                    f"downloading file to {local_folder_path + obj.key}")
                 bucket.download_file(obj.key, local_folder_path + obj.key)
         return True
 
     except FileNotFoundError:
-        print("The file was not found!", flush=True)
+        logger.error("The file was not found!")
         return False
     except NoCredentialsError:
-        print("Credentials error!", flush=True)
+        logger.error("Credentials error!")
         return False
 
 
@@ -93,7 +101,7 @@ def upload_model_h5(model, bucket, roundInfo):
     file_name = 'model_' + str(roundInfo['modelIndex']) + ".h5"
     s3_folder_name = 'round_' + str(roundInfo['roundsCompleted'])
     temp_folder = "/tmp/src/data/saved_models/"
-    model.save(temp_folder + '/' + file_name)
+    model.save(temp_folder + file_name)
 
     file_info = []
     file_info.append(
@@ -118,6 +126,7 @@ def download_tfjs_model(bucket):
     '''Download a tf.js model from S3 and load it as a Keras model'''
     # depends on pwd in local run vs docker
     temp_folder = "/tmp/globalmodel/"
+    logger.info("Downloading model")
     status = download_files_s3("", temp_folder, bucket)
     if not status:
         return False
