@@ -129,6 +129,7 @@ def add_model_obj(path, client_objs):
     for client in client_objs:
         client['model'] = keras.models.load_model(
             os.path.join(path, f'model_{client["modelIndex"]}.h5'))
+        tf.reset_default_graph()
 
 
 def download_tfjs_model(bucket):
@@ -145,13 +146,19 @@ def download_tfjs_model(bucket):
     try:
         model = tfjs.converters.load_keras_model(temp_folder + 'model.json')
         logger.info("Model loaded")
+    except Exception as e:
+        logger.info(f"Exception caught: {e}")
+        logger.exception(f"Unexpected error: {e}")
+        return None
+    try:
         # model.compile(optimizer='adam', loss='binary_crossentropy')
         tf.reset_default_graph()
         logger.info("Attempting global temp folder delete")
         rmtree(temp_folder)
         logger.info("Global temp folder deleted")
     except Exception as e:
-        logger.info(f"Exception caught: {e}")
+        logger.info(f"Second exception caught: {e}")
+        logger.exception(f"Unexpected error: {e}")
         return None
     return model
 
