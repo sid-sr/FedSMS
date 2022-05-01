@@ -20,7 +20,7 @@ def incrementModelIndex():
 
             round_no = current_config['roundsCompleted']
             global_model = download_tfjs_model('fedmodelbucket')
-            save_path = './src/data/clientmodels/'
+            save_path = '/tmp/src/data/clientmodels/'
 
             filtering_exp = Key('round').eq(round_no)
             client_objs = ClientModelTable.query(
@@ -67,7 +67,7 @@ def incrementModelIndex():
             )
             # clean up
             shutil.rmtree(save_path + f'round_{round_no}')
-        
+
         else:
             # round not completed so increment only modelIndex
             response = ConfigTable.update_item(

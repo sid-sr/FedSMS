@@ -92,7 +92,7 @@ def upload_model_h5(model, bucket, roundInfo):
     '''
     file_name = 'model_' + str(roundInfo['modelIndex']) + ".h5"
     s3_folder_name = 'round_' + str(roundInfo['roundsCompleted'])
-    temp_folder = "./src/data/saved_models/"
+    temp_folder = "/tmp/src/data/saved_models/"
     model.save(temp_folder + '/' + file_name)
 
     file_info = []
@@ -117,7 +117,7 @@ def add_model_obj(path, client_objs):
 def download_tfjs_model(bucket):
     '''Download a tf.js model from S3 and load it as a Keras model'''
     # depends on pwd in local run vs docker
-    temp_folder = "./globalmodel/"
+    temp_folder = "/tmp/globalmodel/"
     status = download_files_s3("", temp_folder, bucket)
     if not status:
         return False

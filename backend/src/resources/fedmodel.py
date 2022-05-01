@@ -75,7 +75,7 @@ class FedModel(Resource):
         # to add to DB
         client = {
             # should be s3 URL
-            "modelFile": "./src/data/saved_models/model.h5",
+            "modelFile": "/tmp/src/data/saved_models/model.h5",
             # from db
             "modelIndex": round_info['modelIndex'],
             "round": round_info['roundsCompleted'],

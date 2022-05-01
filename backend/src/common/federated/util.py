@@ -93,7 +93,7 @@ class FedDriver():
         return test_data, test_labels
 
     def get_round_stats(self):
-        path = './src/data/'
+        path = '/tmp/src/data/'
         test_data, test_labels = self.get_global_test_data(path)
         # get test data.
         ga, gl = self.server.eval_global_model(test_data, test_labels)
