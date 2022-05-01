@@ -4,6 +4,7 @@ from common.dynamodb_handler import ConfigTable, ClientModelTable, DecimalEncode
 import json
 import ast
 from decimal import Decimal
+import os
 from boto3.dynamodb.conditions import Key
 import shutil
 
@@ -66,8 +67,8 @@ def incrementModelIndex():
                 ReturnValues="UPDATED_NEW"
             )
             # clean up
-            shutil.rmtree(save_path + f'round_{round_no}')
-
+            shutil.rmtree(save_path)
+            os.makedirs(save_path, exist_ok=True)
         else:
             # round not completed so increment only modelIndex
             response = ConfigTable.update_item(
