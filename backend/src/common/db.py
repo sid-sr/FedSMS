@@ -25,7 +25,7 @@ def incrementModelIndex():
 
             round_no = current_config['roundsCompleted']
             global_model = download_tfjs_model('fedmodelbucket')
-            logger.info("Downloaded global model")
+            logger.info(f"Downloaded global model: {global_model}")
             save_path = '/tmp/src/data/clientmodels/'
 
             filtering_exp = Key('round').eq(round_no)

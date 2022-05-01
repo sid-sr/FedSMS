@@ -142,13 +142,17 @@ def download_tfjs_model(bucket):
         logger.info("Status is false, returning False")
         return False
     logger.info("Attempting to load model")
-    model = tfjs.converters.load_keras_model(temp_folder + 'model.json')
-    logger.info("Model loaded")
-    # model.compile(optimizer='adam', loss='binary_crossentropy')
-    tf.reset_default_graph()
-    logger.info("Attempting global temp folder delete")
-    rmtree(temp_folder)
-    logger.info("Global temp folder deleted")
+    try:
+        model = tfjs.converters.load_keras_model(temp_folder + 'model.json')
+        logger.info("Model loaded")
+        # model.compile(optimizer='adam', loss='binary_crossentropy')
+        tf.reset_default_graph()
+        logger.info("Attempting global temp folder delete")
+        rmtree(temp_folder)
+        logger.info("Global temp folder deleted")
+    except Exception as e:
+        logger.info(f"Exception caught: {e}")
+        return None
     return model
 
 
