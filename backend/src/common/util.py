@@ -77,6 +77,9 @@ def download_files_s3(s3_folder_path, local_folder_path, bucket):
     except NoCredentialsError:
         logger.error("Credentials error!")
         return False
+    except Exception as exc:
+        logger.info(f"Unexpected error: {exc}")
+        return False
 
 
 def upload_model_tfjs(tf_model, bucket):
@@ -134,11 +137,13 @@ def download_tfjs_model(bucket):
     temp_folder = "/tmp/globalmodel/"
     logger.info("Downloading model")
     status = download_files_s3("", temp_folder, bucket)
-    logger.info("Returned from download_files_s3")
+    logger.info(f"Returned from download_files_s3: status - {status}")
     if not status:
-        logger.error("Status is false, returning False")
+        logger.info("Status is false, returning False")
         return False
+    logger.info("Attempting to load model")
     model = tfjs.converters.load_keras_model(temp_folder + 'model.json')
+    logger.info("Model loaded")
     # model.compile(optimizer='adam', loss='binary_crossentropy')
     tf.reset_default_graph()
     logger.info("Attempting global temp folder delete")
