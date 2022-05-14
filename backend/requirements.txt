@@ -60,3 +60,4 @@ Werkzeug==2.0.2
 wrapt==1.13.3
 zipp==3.6.0
 names==0.3.0
+scikit-learn==1.0.1

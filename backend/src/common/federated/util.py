@@ -6,6 +6,10 @@ from common.util import upload_model_tfjs
 import numpy as np
 from common.util import download_files_s3
 import os
+import logging
+from sklearn.metrics import roc_auc_score
+
+logger = logging.getLogger('gunicorn.error')
 
 
 class FederatedClient():
@@ -36,8 +40,20 @@ class FederatedServer():
 
     def eval_global_model(self, test_data, test_labels):
         self.model.compile(optimizer='adam', loss='binary_crossentropy')
-        return ((self.model.predict(test_data) > 0.5).ravel() == test_labels).mean(), \
-            self.model.evaluate(test_data, test_labels, verbose=False)
+        logger.info("Compiled model")
+        v1 = 2
+        try:
+            v1 = self.model.evaluate(test_data, test_labels, verbose=False)
+        except Exception as e:
+            logger.info(f"{e}")
+            logger.exception(f"{e}")
+        logger.info(f"evaluated {v1}")
+        # v2 = ((self.model.predict(test_data) > 0.5).ravel() == test_labels).mean()
+        v2 = roc_auc_score(test_labels, self.model.predict(test_data))
+        logger.info(f"predicted {v2}")
+        # return ((self.model.predict(test_data) > 0.5).ravel() == test_labels).mean(), \
+        #    self.model.evaluate(test_data, test_labels, verbose=False)
+        return v1, v2
 
 
 class FedDriver():
@@ -95,9 +111,12 @@ class FedDriver():
     def get_round_stats(self):
         path = '/tmp/src/data/'
         test_data, test_labels = self.get_global_test_data(path)
+        logger.info("received test data")
+        logger.info(
+            f"received test data: {test_data.shape} {test_labels.shape}")
         # get test data.
-        ga, gl = self.server.eval_global_model(test_data, test_labels)
-
+        gl, ga = self.server.eval_global_model(test_data, test_labels)
+        logger.info("Evaluated")
         acl = sum([client.loss for client in self.server.clients]) / \
             len(self.server.clients)
 
